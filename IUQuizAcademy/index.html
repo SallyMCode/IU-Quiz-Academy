@@ -1,11 +1,41 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IU Quiz Academy</title>
+  <meta charset="UTF-8">
+  <title>Benutzer erstellen</title>
 </head>
 <body>
-    
+  <h1>Neuen Nutzer anlegen</h1>
+  <form id="userForm">
+    <label for="username">Benutzername:</label>
+    <input type="text" id="username" name="username" required><br><br>
+
+    <label for="passwordHash">Passwort-Hash:</label>
+    <input type="text" id="passwordHash" name="passwordHash" required><br><br>
+
+    <button type="submit">Absenden</button>
+  </form>
+
+  <p id="response"></p>
+
+  <script>
+    document.getElementById('userForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const passwordHash = document.getElementById('passwordHash').value;
+
+      const response = await fetch('http://localhost:3000/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, passwordHash })
+      });
+
+      const result = await response.json();
+      document.getElementById('response').textContent = JSON.stringify(result, null, 2);
+    });
+  </script>
 </body>
 </html>

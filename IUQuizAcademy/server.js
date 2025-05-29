@@ -1,4 +1,3 @@
-// server.js 
 const express = require('express');
 const { sequelize, testConnection } = require('./config/database');
 const { User, Question, Option, Answer, GameSession, SessionParticipant } = require('./models');
