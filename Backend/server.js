@@ -7,6 +7,9 @@ const PORT = process.env.PORT || 3000; // Standardport 3000 oder Umgebungsvariab
 
 app.use(express.json()); // Für das Parsen von JSON-Anfragen im Request Body
 
+const cors = require("cors");
+app.use(cors());
+
 // Datenbankverbindung testen und Server starten
 async function startServer() {
   const isConnected = await testConnection();
