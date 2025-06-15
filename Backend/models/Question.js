@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
-const User = require('./User'); // Importiert das User-Modell für die Assoziation
+const QuizRoom = require('./QuizRoom'); // Importiert das Modell für die Assoziation
 
 const Question = sequelize.define('Question', {
   id: {
@@ -8,44 +8,36 @@ const Question = sequelize.define('Question', {
     autoIncrement: true,
     primaryKey: true,
   },
+
+  quizRoomId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    field: 'quiz_room_id',
+    },
+
   questionText: {
     type: DataTypes.TEXT,
     allowNull: false,
-    fiel: 'question_text', 
+    field: 'question_text', 
   },
-  correctAnswer: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    field: 'correct_answer', 
-  },
-  explanation: {
-    type: DataTypes.TEXT,
-    allowNull: true,
-  },
-  creatorId: {
+
+  correctAnswerIndex: {
     type: DataTypes.INTEGER,
-    allowNull: true, // Entspricht ON DELETE SET NULL
-    references: {
-      model: User, // Referenziert das User-Modell
-      key: 'id',
-    }
+    allowNull: false,
+    field: 'correct_answer_index', 
   },
+ 
 }, {
-  tableName: 'questions',
+  tableName: 'question',
   timestamps: true,
   createdAt: 'created_at',
-  updatedAt: false
+  updatedAt: false,
 });
 
-// Assoziation definieren
-Question.belongsTo(User, {foreignKey: {
-    name: 'creatorId',
-    allowNull: true,
-    field: 'creator_id',
-    onDelete: 'SET NULL'
-  },
-  as: 'creator'});
-
-User.hasMany(Question, { foreignKey: 'creatorId', as: 'questionsCreated' });
-
+// Assoziation
+Question.belongsTo(QuizRoom, {
+  foreignKey:'quizRoomId',
+    onDelete: 'CASCADE', 
+  }),
+ 
 module.exports = Question;
