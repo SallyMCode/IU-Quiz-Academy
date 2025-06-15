@@ -79,3 +79,29 @@ exports.deleteQuizRoom = async (req, res) => {
     res.status(500).json({ error: 'Fehler beim Löschen des Quiz-Raums' });
   }
 };
+
+// Quiz-Raum aktualisieren
+exports.updateQuizRoom = async (req, res) => {
+  const { id } = req.params;
+  const { title, public, creatorId } = req.body;
+
+  try {
+    const room = await QuizRoom.findByPk(id);
+
+    if (!room) {
+      return res.status(404).json({ error: 'Quiz-Raum nicht gefunden' });
+    }
+
+    // Nur Felder aktualisieren, die auch übergeben wurden
+    if (title !== undefined) room.title = title;
+    if (public !== undefined) room.public = public;
+    if (creatorId !== undefined) room.creatorId = creatorId;
+
+    await room.save();
+
+    res.json(room);
+  } catch (err) {
+    console.error('Fehler beim Aktualisieren des Quiz-Raums:', err);
+    res.status(500).json({ error: 'Fehler beim Aktualisieren des Quiz-Raums' });
+  }
+};
