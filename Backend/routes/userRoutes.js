@@ -38,7 +38,6 @@ router.post(
 );
 
 // Login (keine Validierung, da Login z.B. nur username + password erwartet)
-// Wenn du willst, kannst du aber auch hier rudimentär validieren
 router.post(
   '/login',
   [
