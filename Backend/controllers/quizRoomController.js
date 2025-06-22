@@ -19,7 +19,8 @@ exports.getAllQuizRooms = async (req, res) => {
 
 // Neuen Quiz-Raum erstellen
 exports.createQuizRoom = async (req, res) => {
-  const { title, public, creatorId } = req.body;
+  const { title, creatorId } = req.body;
+  const isPublic = req.body.public;
 
   if (!title) {
     return res.status(400).json({ error: 'Titel des Quiz-Raums ist erforderlich.' });
@@ -28,7 +29,7 @@ exports.createQuizRoom = async (req, res) => {
   try {
     const room = await QuizRoom.create({
       title,
-      public: !!public,
+      public: !!isPublic,
       creatorId: creatorId || null
     });
     res.status(201).json(room);
@@ -83,7 +84,8 @@ exports.deleteQuizRoom = async (req, res) => {
 // Quiz-Raum aktualisieren
 exports.updateQuizRoom = async (req, res) => {
   const { id } = req.params;
-  const { title, public, creatorId } = req.body;
+  const { title, creatorId } = req.body;
+  const isPublic = req.body.public;
 
   try {
     const room = await QuizRoom.findByPk(id);
@@ -94,7 +96,7 @@ exports.updateQuizRoom = async (req, res) => {
 
     // Nur Felder aktualisieren, die auch übergeben wurden
     if (title !== undefined) room.title = title;
-    if (public !== undefined) room.public = public;
+    if (isPublic !== undefined) room.public = isPublic;
     if (creatorId !== undefined) room.creatorId = creatorId;
 
     await room.save();

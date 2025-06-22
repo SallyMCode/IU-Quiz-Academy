@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: ['id', 'username', 'admin'], // kein passwordHash
+      attributes: ['id', 'username', 'admin'], // kein passwordHash zurückgeben
     });
     res.json(users);
   } catch (err) {
@@ -22,7 +22,7 @@ exports.createUser = async (req, res) => {
   }
 
   try {
-    const passwordHash = await bcrypt.hash(password, 10); // sicher hashen
+    const passwordHash = await bcrypt.hash(password, 10); // Passwort sicher hashen
     const newUser = await User.create({ username, passwordHash, admin });
 
     res.status(201).json({
@@ -55,7 +55,7 @@ exports.loginUser = async (req, res) => {
       return res.status(401).json({ error: 'Ungültige Anmeldedaten' });
     }
 
-    // Token erzeugen 
+    // Login erfolgreich, User-Daten zurückgeben (ohne Passwort)
     res.json({
       message: 'Login erfolgreich',
       user: {
@@ -86,4 +86,3 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ error: 'Fehler beim Löschen des Nutzers' });
   }
 };
-

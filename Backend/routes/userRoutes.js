@@ -5,6 +5,7 @@ const userController = require('../controllers/userController');
 
 // Middleware zum Authentifizieren von Tokens
 const authenticateToken = require('../middlewares/authenticateToken');
+
 // Middleware für Adminrechte
 const requireAdmin = require('../middlewares/requireAdmin');
 

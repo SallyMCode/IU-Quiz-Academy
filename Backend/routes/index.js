@@ -1,6 +1,4 @@
-//Zentrale Routes Verwaltung für Entschlackung server.js und leichteres nachrüsten von neuen Routen
-
-
+// //Zentrale Routes Verwaltung für Entschlackung server.js und leichteres nachrüsten von neuen Routen
 const userRoutes = require('./userRoutes');
 const quizSessionRoutes = require('./quizSessionRoutes');
 const quizRoomRoutes = require('./quizRoomRoutes');
