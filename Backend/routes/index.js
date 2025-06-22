@@ -12,7 +12,7 @@ const reasonRoutes = require('./reasonRoutes');
 function registerRoutes(app) {
   app.use('/api/users', userRoutes);
   app.use('/api/sessions', quizSessionRoutes);
-  app.use('/api/rooms', quizRoomRoutes);
+  app.use('/api/quizrooms', quizRoomRoutes);
   app.use('/api/questions', questionRoutes);
   app.use('/api/answers', answerOptionRoutes);
   app.use('/api/answers-in-session', answerInSessionRoutes);

@@ -1,0 +1,112 @@
+body {
+    display: flex;
+    justify-content: center;
+    /* Zentriert den Inhalt horizontal */
+    align-items: center;
+    /* Zentriert den Inhalt vertikal */
+    min-height: 100vh;
+    /* Stellt sicher, dass der Body die volle Viewport-Höhe einnimmt */
+    margin: 0;
+    /* Entfernt den Standard-Body-Margin */
+    background-color: #F0BF4C;
+    background: linear-gradient(180deg, #F0BF4C 0%, #FFFFFF 100%);
+}
+
+.logo_image {
+    position: fixed;
+    /* Fixiert das Element relativ zum Viewport (Browserfenster) */
+    top: 20px;
+    /* Abstand vom oberen Rand des Viewports (anpassen nach Bedarf) */
+    left: 20px;
+    /* Abstand vom rechten Rand des Viewports (anpassen nach Bedarf) */
+    width: 200px;
+    /* Beispielbreite: Passe dies an die Größe deines Bildes an */
+    height: auto;
+    /* Behält das Seitenverhältnis bei */
+    z-index: 1000;
+    /* Stellt sicher, dass das Bild über anderen Inhalten liegt */
+
+
+}
+
+.container {
+    width: 1000px;
+    display: flex;
+    background: white;
+    color: black;
+    flex-direction: column;
+    gap: 20px;
+    border-radius: 10px;
+    padding: 40px 50px;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.5);;
+
+}
+
+.container hr {
+    height: 2px;
+    border: none;
+    background-color: #707070;
+}
+
+.container h1 {
+    text-align: center;
+    /* Zentriert den Text im h1-Element */
+    margin-bottom: 20px;
+    /* Optional: Abstand nach unten */
+}
+
+.container h2 {
+    font-size: 27px;
+    font-weight: 500;
+}
+
+.container ul li {
+    display: flex;
+    align-items: center;
+    height: 70px;
+    border: 1px solid #707070;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+    justify-content: center;
+    /* Zentriert den Inhalt der Antwortfelder */
+}
+
+.container button {
+    margin: auto;
+    width: 250px;
+    height: 65px;
+    background: #F0BF4C;
+    color: black;
+    font-size: 25px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.container.index {
+    margin: auto;
+    font-size: 18px;
+
+}
+
+/* Beispielstile für korrekte/falsche Antworten */
+
+.container ul li.correct {
+    background-color: #d4edda; 
+    border-color: #28a745;   
+    color: #155724;
+}
+
+.container ul li.wrong {
+    background-color: #f8d7da; 
+    border-color: #dc3545;   
+    color: #721c24;
+}
+
+.container ul li.selected {
+    background-color: #e2e6ea; /* Heller Grau-Ton */
+    border-color: #6c757d;
+}
