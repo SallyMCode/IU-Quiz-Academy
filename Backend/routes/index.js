@@ -12,14 +12,9 @@ function registerRoutes(app) {
   app.use('/api/sessions', quizSessionRoutes);
   app.use('/api/quizrooms', quizRoomRoutes);
   app.use('/api/questions', questionRoutes);
-  app.use('/api/answers', answerOptionRoutes);
+  app.use('/api/answer-options', answerOptionRoutes);
   app.use('/api/answers-in-session', answerInSessionRoutes);
   app.use('/api/reasons', reasonRoutes);
-
-  // Optional: Healthcheck
-  app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok' });
-  });
 }
 
 module.exports = registerRoutes;
