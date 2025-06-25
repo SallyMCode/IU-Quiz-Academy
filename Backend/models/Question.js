@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
-const QuizRoom = require('./QuizRoom'); // Importiert das Modell für die Assoziation
 
 const Question = sequelize.define('Question', {
   id: {
@@ -34,10 +33,4 @@ const Question = sequelize.define('Question', {
   updatedAt: false,
 });
 
-// Assoziation
-Question.belongsTo(QuizRoom, {
-  foreignKey:'quizRoomId',
-    onDelete: 'CASCADE', 
-  }),
- 
 module.exports = Question;

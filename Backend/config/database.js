@@ -1,4 +1,5 @@
-require('dotenv').config(); // Um Umgebungsvariablen zu laden
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize(
@@ -9,7 +10,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     dialect: 'mariadb', // Wichtig: mariadb angeben
     port: process.env.DB_PORT || 3306, // Standard-Port für Webanwendungen
-    logging: false, // Setze auf true, um SQL-Abfragen in der Konsole zu sehen
+    logging: false, // Log-Ausgaben in der Konsole
     define: {
       timestamps: true, // Sequelize fügt automatisch createdAt und updatedAt hinzu
       underscored: true, // Benutzt snake_case für Spaltennamen in der DB (z.B. created_at statt createdAt)

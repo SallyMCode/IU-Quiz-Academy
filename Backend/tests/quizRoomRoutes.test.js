@@ -1,7 +1,7 @@
 require('dotenv').config();
-const request = require('supertest');
 const app = require('../app'); // Dein Express-App-Export
-const { sequelize, User, QuizRoom } = require('../models');
+const request = require('supertest');
+const { sequelize, User, Question, QuizRoom, QuizSession, AnswerInSession, Reason, AnswerOption } = require('../models');
 
 beforeAll(async () => {
   // Tabellen neu erstellen

@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
-const Question = require('./Question');
 
 const Reason = sequelize.define('Reason', {
   id: {
@@ -13,10 +12,6 @@ const Reason = sequelize.define('Reason', {
     type: DataTypes.INTEGER,
     allowNull: false,
     field: 'question_id',
-    references: {
-      model: Question,
-      key: 'id',
-    },
   },
 
   reasonText: {
@@ -35,12 +30,6 @@ const Reason = sequelize.define('Reason', {
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: false,
-});
-
-Reason.belongsTo(Question, {
-  foreignKey: 'questionId',
-  as: 'question',
-  onDelete: 'CASCADE',
 });
 
 module.exports = Reason;

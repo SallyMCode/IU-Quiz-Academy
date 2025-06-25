@@ -1,8 +1,7 @@
 require('dotenv').config();
-const { sequelize } = require('../config/database');
 const app = require('../app');
 const request = require('supertest');
-const { User, QuizRoom, QuizSession } = require('../models');
+const { sequelize, User, Question, QuizRoom, QuizSession, AnswerInSession, Reason, AnswerOption } = require('../models');
 
 let user, quizRoom, session;
 

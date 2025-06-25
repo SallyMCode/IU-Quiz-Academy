@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
-const Question = require('./Question');
 
 const AnswerOption = sequelize.define('AnswerOption', {
   id: {
@@ -13,10 +12,6 @@ const AnswerOption = sequelize.define('AnswerOption', {
     type: DataTypes.INTEGER,
     allowNull: false,
     field: 'question_id',
-    references: {
-      model: Question,
-      key: 'id',
-    },
   },
   
   optionIndex: {
@@ -36,11 +31,5 @@ const AnswerOption = sequelize.define('AnswerOption', {
   timestamps: false,
 });
 
-// Assoziationen
-AnswerOption.belongsTo(Question, {
-  foreignKey: 'questionId',
-  as: 'question',
-  onDelete: 'CASCADE',
-});
 
 module.exports = AnswerOption;

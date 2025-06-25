@@ -1,9 +1,9 @@
 require('dotenv').config();
-const request = require('supertest');
 const app = require('../app'); 
-const { sequelize } = require('../config/database');
+const request = require('supertest');
 
 
+const { sequelize, User, Question, QuizRoom, QuizSession, AnswerInSession, Reason, AnswerOption } = require('../models');
 beforeAll(async () => {
   await sequelize.sync({ force: true }); 
 });

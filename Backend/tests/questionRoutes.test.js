@@ -1,8 +1,7 @@
 require('dotenv').config();
 const request = require('supertest');
 const app = require('../app');
-const { sequelize } = require('../config/database');
-const { User, QuizRoom, Question } = require('../models');
+const { sequelize, User, Question, QuizRoom, QuizSession, AnswerInSession, Reason, AnswerOption } = require('../models');
 
 let testRoom;
 
@@ -59,12 +58,16 @@ describe('Question API Tests (abgestimmt auf Controller)', () => {
     const res = await request(app)
       .post('/api/questions')
       .send({
-        // fehlt alles außer correctAnswerIndex
-        correctAnswerIndex: 0,
+        correctAnswerIndex: 0, // quizRoomId und questionText fehlen absichtlich
       });
 
     expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty('error');
-    expect(res.body.error).toContain('quizRoomId');
+    expect(res.body).toHaveProperty('errors');
+    expect(Array.isArray(res.body.errors)).toBe(true);
+
+    const errorMsgs = res.body.errors.map(err => err.msg);
+
+    expect(errorMsgs).toContain('quizRoomId muss eine positive Zahl sein.');
+    expect(errorMsgs).toContain('Fragetext muss mindestens 5 Zeichen lang sein.');
   });
 });
