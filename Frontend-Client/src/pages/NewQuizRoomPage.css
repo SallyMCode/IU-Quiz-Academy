@@ -1,0 +1,198 @@
+:root {
+      --primary-yellow: #EAB308;
+      --secondary-yellow: #FACC15;
+      --bg-light: #FCFCFA;
+      --text-dark: #1F2937;
+      --card-bg: #FFFFFF;
+      --border: #D1D5DB;
+      --link-color: #2563EB;
+      --error-color: #DC2626;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      line-height: 1.6;
+      padding-top: 70px;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .nav-left img {
+      height: 32px;
+    }
+    .logo {
+      font-weight: 600;
+      color: var(--primary-yellow);
+      font-size: 1.2rem;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+    nav ul li a {
+      text-decoration: none;
+      color: var(--text-dark);
+      font-weight: 500;
+    }
+    nav ul li a:hover {
+      color: var(--link-color);
+    }
+
+    /* Headerbild */
+    header {
+      background-image: url('https://images.unsplash.com/photo-1558021212-51b6ecfa0db9?auto=format&fit=crop&w=1600&q=80');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 4rem 2rem 3rem;
+      text-align: center;
+      position: relative;
+    }
+    header::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+    }
+    header h1 {
+      position: relative;
+      font-size: 2.5rem;
+      z-index: 1;
+    }
+
+    .container {
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .greeting {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .greeting h2 {
+      font-size: 1.8rem;
+      color: var(--primary-yellow);
+      margin-bottom: 0.5rem;
+    }
+    .greeting p {
+      font-size: 1rem;
+      color: #374151;
+    }
+
+    /* Formular */
+    form {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+      margin-bottom: 3rem;
+    }
+    form label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+    form input[type="text"],
+    form textarea,
+    form select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.3rem;
+      font-size: 1rem;
+      font-family: 'Open Sans', sans-serif;
+    }
+    form textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    form button {
+      background: var(--primary-yellow);
+      border: none;
+      padding: 0.7rem 1.2rem;
+      font-weight: 600;
+      border-radius: 0.3rem;
+      cursor: pointer;
+      color: var(--text-dark);
+      font-size: 1rem;
+      transition: background-color 0.3s;
+    }
+    form button:hover {
+      background: var(--secondary-yellow);
+    }
+
+    /* Fragen-Liste */
+    section.questions-overview {
+      margin-bottom: 3rem;
+    }
+    section.questions-overview h2 {
+      color: var(--primary-yellow);
+      margin-bottom: 1rem;
+    }
+    .question-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--secondary-yellow);
+      border-radius: 0.5rem;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .question-text {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .answers-list {
+      list-style: none;
+      padding-left: 1rem;
+      margin-bottom: 0.7rem;
+      color: #555;
+    }
+    .answers-list li {
+      margin-bottom: 0.3rem;
+    }
+    .correct-answer {
+      color: var(--primary-yellow);
+      font-weight: 700;
+    }
+    .question-actions button {
+      background: var(--primary-yellow);
+      border: none;
+      padding: 0.3rem 0.7rem;
+      margin-right: 0.5rem;
+      border-radius: 0.3rem;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+      transition: background-color 0.3s;
+    }
+    .question-actions button:hover {
+      background: var(--secondary-yellow);
+    }

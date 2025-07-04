@@ -110,3 +110,164 @@ body {
     background-color: #e2e6ea; /* Heller Grau-Ton */
     border-color: #6c757d;
 }
+
+
+
+/* QuizSession.css von Sallys Design-Idee
+:root {
+      --primary-yellow: #EAB308;
+      --secondary-yellow: #FACC15;
+      --bg-light: #FCFCFA;
+      --text-dark: #1F2937;
+      --card-bg: #FFFFFF;
+      --border: #D1D5DB;
+      --link-color: #2563EB;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      padding-top: 70px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-left img {
+      height: 32px;
+    }
+
+    .logo {
+      font-weight: 600;
+      color: var(--primary-yellow);
+      font-size: 1.2rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: var(--text-dark);
+      font-weight: 500;
+    }
+
+    nav ul li a:hover {
+      color: var(--link-color);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
+    }
+
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .quiz-header h1 {
+      font-size: 2rem;
+      color: var(--primary-yellow);
+    }
+
+    .quiz-header p {
+      color: #6B7280;
+      margin-top: 0.5rem;
+    }
+
+    .question-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+
+    .question-text {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    .answers {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .answer-btn {
+      background: var(--secondary-yellow);
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .answer-btn:hover {
+      background: var(--primary-yellow);
+    }
+
+    .next-btn {
+      display: block;
+      margin: 2rem auto 0;
+      padding: 0.75rem 2rem;
+      background: var(--link-color);
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+
+    .next-btn:hover {
+      opacity: 0.9;
+    }
+
+    .progress-container {
+      background: var(--border);
+      height: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--primary-yellow);
+      width: 40%; /* z.B. 2 von 5 Fragen 
+    } 
+      */
+
