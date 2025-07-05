@@ -1,15 +1,17 @@
-//import './App.css'; macht Probleme
-// React importieren
 import React from 'react';
-// MainPage importieren
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import MainPage from './pages/MainPage';
+import CommunityPage from './pages/CommunityPage';
 
 function App() {
   return (
-    <div className="App">
-      {/* Die eigentliche Hauptseite */}
-      <MainPage />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/forum" element={<CommunityPage />} />
+      </Routes>
+    </Router>
   );
 }
 

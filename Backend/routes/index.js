@@ -6,6 +6,9 @@ const questionRoutes = require('./questionRoutes');
 const answerOptionRoutes = require('./answerOptionRoutes');
 const answerInSessionRoutes = require('./answerInSessionRoutes');
 const reasonRoutes = require('./reasonRoutes');
+const statisticsRoutes = require('./statisticsRoutes');
+const userMeRoutes = require('./userMeRoutes');
+const lastSessionRoutes = require('./lastSessionRoutes');
 
 function registerRoutes(app) {
   app.use('/api/users', userRoutes);
@@ -15,6 +18,9 @@ function registerRoutes(app) {
   app.use('/api/answer-options', answerOptionRoutes);
   app.use('/api/answers-in-session', answerInSessionRoutes);
   app.use('/api/reasons', reasonRoutes);
+  app.use('/api/statistics', statisticsRoutes);
+  app.use('/api/users/me', userMeRoutes);
+  app.use('/api/sessions/last', lastSessionRoute);
 }
 
 module.exports = registerRoutes;
