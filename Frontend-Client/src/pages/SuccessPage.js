@@ -3,8 +3,9 @@ import './SuccessPage.css';
 import PrimaryContentBox from '../assets/components/PrimaryContentbox';
 import SecondaryContentBox from '../assets/components/SecondaryContentbox';
 import ButtonGroup from '../assets/components/ButtonGroup';
+import { Link } from 'react-router-dom';
 import NavBar from '../assets/components/NavBar';
-import Header from '../assets/components/Header';
+
 
 
 const SuccessPage = () => {
@@ -19,19 +20,36 @@ const SuccessPage = () => {
     subMessage: "Sieh dir deinen Score im Vergleich zu anderen an"
   };
 
-  // Daten für SecondaryContentBox (Score-Details)
+  //Daten für SecondaryContentBox (Score-Details)
   const secondaryContentData = {
-    quizRoomTitle: "Quiz Room: Requirements Engineering",
+    quizRoom: "Datenbanksysteme & SQL Grundlagen", // Titel hierher verschoben
     currentScore: "8 von 14 Punkten",
     lastScore: "9",
     bestScore: "13",
     worstScore: "4"
   };
 
-  // Daten für die Buttons der ButtonGroup
+   // ==========================================
+  // HANDLER-FUNKTIONEN FÜR DIE BUTTONS DER RESULTSEITE
+  // ==========================================
+
+  const handleRestartQuiz = () => {
+    console.log("Quiz neu starten...");
+    alert("Das Quiz wird neu gestartet!");
+    // Hier würde die Logik zum Neustarten des Quiz implementiert
+    // z.B. Navigation zur QuizPage oder Reset des Quiz-States
+  };
+
+  const handleGoToDashboard = () => {
+    console.log("Zum Dashboard navigieren...");
+    alert("Du wirst zum Dashboard weitergeleitet!");
+    // Hier würde die Logik zur Navigation zum Dashboard implementiert
+  };
+
+  // Daten für die Buttons der ButtonGroup, direkt in ResultPage definiert
   const buttonsData = [
-    { label: "Neustart", type: "secondary", onClick: () => alert('Quiz neu starten!') },
-    { label: "Dashboard", type: "primary", onClick: () => alert('Zum Dashboard navigieren!') }
+    { label: "Neustart", type: "secondary", onClick:handleRestartQuiz  },
+    { label: "Dashboard", type: "primary", onClick: handleGoToDashboard }
   ];
 
   // ==========================================
@@ -39,24 +57,27 @@ const SuccessPage = () => {
   // ==========================================
 
   return (
+    <div>
+      <NavBar />
     <div className="quiz-layout-container">
       {/* PrimaryContentBox (nimmt 2/3 des Layouts ein) */}
       <PrimaryContentBox
+        mode="result" // <-- Hier den Modus definieren
         mainMessage={primaryContentData.mainMessage}
         subMessage={primaryContentData.subMessage}
+        buttons={buttonsData} // Übergibt die Button-Daten an PrimaryContentBox
       />
 
       {/* SecondaryContentBox (nimmt 1/3 des Layouts ein) */}
       <SecondaryContentBox
-        quizRoomTitle={secondaryContentData.quizRoomTitle}
+        mode="result" // <-- Hier den Modus definieren
+        quizRoom={secondaryContentData.quizRoom}
         currentScore={secondaryContentData.currentScore}
         lastScore={secondaryContentData.lastScore}
         bestScore={secondaryContentData.bestScore}
         worstScore={secondaryContentData.worstScore}
       />
-
-      {/* ButtonGroup direkt in ResultPage gerendert */}
-      <ButtonGroup buttons={buttonsData} />
+    </div>
     </div>
   );
 }

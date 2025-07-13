@@ -30,7 +30,7 @@ const QuizSession = () => {
 
   // Daten für SecondaryContentBox
   const quizInfoData = {
-    quizTitle: "Datenbanksysteme & SQL Grundlagen", // Titel hierher verschoben
+    quizRoom: "Datenbanksysteme & SQL Grundlagen", // Titel hierher verschoben
     currentQuestionDisplay: `Frage ${quizData.currentQuestion} von ${quizData.totalQuestions}`,
     totalPoints: "4",
   };
@@ -70,6 +70,7 @@ const QuizSession = () => {
     <div className="quiz-layout-container">
       {/* PrimaryContentBox (nimmt 2/3 des Layouts ein) */}
       <PrimaryContentBox
+        mode="quiz" // <-- Hier den Modus definieren
         questionText={quizData.questionText}
         options={quizData.options}
         onOptionClick={handleOptionClick}
@@ -78,7 +79,8 @@ const QuizSession = () => {
 
       {/* SecondaryContentBox (nimmt 1/3 des Layouts ein) */}
       <SecondaryContentBox
-        quizTitle={quizInfoData.quizTitle} // Titel hier übergeben
+        mode="quiz" // <-- Hier den Modus definieren
+        quizRoom={quizInfoData.quizRoom} // Titel hier übergeben
         questionNumber={quizInfoData.currentQuestionDisplay}
         data={{
             totalPoints: quizInfoData.totalPoints,
