@@ -1,0 +1,25 @@
+.option-field-group {
+    display: flex;
+    flex-direction: column; /* Optionen untereinander anordnen */
+    gap: 15px; /* Abstand zwischen den Optionsfeldern */
+    width: 100%; /* Nimmt die volle Breite des Elterncontainers ein */
+}
+
+/* Styling für jede einzelne Option (die gelben Boxen) */
+.option-item {
+    background-color: #ffc107; /* Gelber Hintergrund */
+    color: #ffffff; /* Weißer Text */
+    padding: 15px 20px; /* Innenabstand */
+    border-radius: 8px; /* Abgerundete Ecken */
+    font-size: 1.1em;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer; /* Zeigt an, dass es anklickbar ist */
+    transition: background-color 0.2s ease, box-shadow 0.2s ease; /* Sanfter Übergang bei Hover */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Leichter Schatten */
+}
+
+.option-item:hover {
+    background-color: #e0a800; /* Dunkleres Gelb beim Hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Deutlicherer Schatten beim Hover */
+}

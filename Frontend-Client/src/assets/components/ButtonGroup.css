@@ -1,0 +1,47 @@
+.button-group {
+    display: flex; /* Nutzt Flexbox, um Buttons nebeneinander anzuordnen */
+    justify-content: center; /* Zentriert die Buttons horizontal im Container */
+    gap: 20px; /* Abstand zwischen den Buttons */
+    margin-top: 40px; /* Abstand nach oben zur vorherigen Sektion (z.B. OptionFieldGroup) */
+    width: 100%; /* Nimmt die volle Breite ein, um die Zentrierung zu ermöglichen */
+}
+
+/* Basis-Styling für alle Buttons in der Gruppe */
+.button-group button {
+    padding: 15px 30px; /* Innenabstand für die Button-Fläche */
+    border: 1px solid; /* Rand für die Button-Form */
+    border-radius: 50px; /* Stark abgerundete Ecken für Pille-Form */
+    font-size: 1.1em; /* Schriftgröße */
+    font-weight: 600; /* Schriftstärke */
+    cursor: pointer; /* Zeigt an, dass es anklickbar ist */
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease; /* Sanfter Übergang bei Hover */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Leichter Schatten */
+    min-width: 150px; /* Mindestbreite, damit Buttons nicht zu klein werden */
+    text-align: center; /* Text zentrieren */
+}
+
+/* Styling für den primären (rechten, gelben "Weiter") Button */
+.button-group .button-primary {
+    background-color: #ffc107; /* Gelber Hintergrund analog OptionfieldGroup */
+    border-color: #ffc107; /* Gelber Rand */
+    color: #ffffff; /* Weißer Text */
+}
+
+.button-group .button-primary:hover {
+    background-color: #e0a800; /* Dunkleres Gelb beim Hover */
+    border-color: #e0a800;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Deutlicherer Schatten */
+}
+
+/* Styling für den sekundären (linken, abgeschwächten "Abbrechen") Button */
+.button-group .button-secondary {
+    background-color: #f0f0f0; /* Leicht grauer Hintergrund (abgeschwächt) */
+    border-color: #d0d0d0; /* Heller grauer Rand */
+    color: #616161; /* Dunkelgrauer Text */
+}
+
+.button-group .button-secondary:hover {
+    background-color: #e0e0e0; /* Etwas dunklerer Grauton beim Hover */
+    border-color: #b0b0b0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Deutlicherer Schatten */
+}

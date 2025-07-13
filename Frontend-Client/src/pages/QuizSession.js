@@ -1,14 +1,95 @@
 import React, { useState } from 'react';
 import './QuizSession.css';
+import PrimaryContentBox from '../assets/components/PrimaryContentbox';
+import SecondaryContentBox from '../assets/components/SecondaryContentbox';
+import ButtonGroup from '../assets/components/ButtonGroup';
+import NavBar from '../assets/components/NavBar';
+import Header from '../assets/components/Header';
+
 
 
 const QuizSession = () => {
+   // ==========================================
+  // HARTKODIERTE BEISPIELDATEN FÜR DAS QUIZ
+  // ==========================================
 
-   <div>
-      <h1>QuizSession Works!</h1>
+  // Daten für PrimaryContentBox
+  const quizData = {
+
+
+    currentQuestion: 3, // Aktuelle Frage
+    totalQuestions: 7,  // Gesamtanzahl der Fragen
+    questionText: "Welcher SQL-Befehl wird verwendet, um neue Datensätze in eine Tabelle einzufügen?",
+    options: [
+      "UPDATE",
+      "INSERT INTO",
+      "ADD RECORD",
+      "CREATE NEW"
+    ]
+  };
+
+  // Daten für SecondaryContentBox
+  const quizInfoData = {
+    quizTitle: "Datenbanksysteme & SQL Grundlagen", // Titel hierher verschoben
+    currentQuestionDisplay: `Frage ${quizData.currentQuestion} von ${quizData.totalQuestions}`,
+    totalPoints: "4",
+  };
+
+  // ==========================================
+  // HANDLER-FUNKTIONEN FÜR INTERAKTIONEN
+  // ==========================================
+
+  const handleOptionClick = (selectedOption) => {
+    console.log("Ausgewählte Option:", selectedOption);
+    alert(`Du hast "${selectedOption}" ausgewählt!`);
+  };
+
+  const handleNextQuestion = () => {
+    console.log("Navigiere zur nächsten Frage...");
+    alert("Gehe zur nächsten Frage!");
+  };
+
+  const handleCancelQuiz = () => {
+    console.log("Quiz wird abgebrochen...");
+    alert("Das Quiz wird abgebrochen.");
+  };
+
+  // Daten für die Buttons der ButtonGroup
+  const buttonsData = [
+    { label: "Abbrechen", type: "secondary", onClick: handleCancelQuiz }, // Handler zugewiesen
+    { label: "Weiter", type: "primary", onClick: handleNextQuestion }    // Handler zugewiesen
+  ];
+
+  // ==========================================
+  // RENDERING DER KOMPONENTEN
+  // ==========================================
+
+  return (
+    <div> 
+        <NavBar />
+    <div className="quiz-layout-container">
+      {/* PrimaryContentBox (nimmt 2/3 des Layouts ein) */}
+      <PrimaryContentBox
+        questionText={quizData.questionText}
+        options={quizData.options}
+        onOptionClick={handleOptionClick}
+        buttons={buttonsData} // Übergibt die Button-Daten an PrimaryContentBox
+      />
+
+      {/* SecondaryContentBox (nimmt 1/3 des Layouts ein) */}
+      <SecondaryContentBox
+        quizTitle={quizInfoData.quizTitle} // Titel hier übergeben
+        questionNumber={quizInfoData.currentQuestionDisplay}
+        data={{
+            totalPoints: quizInfoData.totalPoints,
+        }}
+      />
     </div>
+    </div>
+  );
+}
 
-
+export default QuizSession;
 
 //     const [index, setIndex] = useState(0);
 //     const [givenAnswer, setGivenAnswer] = useState(null); // Speichert den Index der VOM BENUTZER GEGEBENEN Antwort
@@ -107,6 +188,4 @@ const QuizSession = () => {
 //         </div>
 //     );
 
-};
 
-export default QuizSession;
