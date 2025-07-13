@@ -2,21 +2,22 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 
 module.exports = async (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"
+const authHeader = req.headers['authorization'];
+const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"
 
-  if (!token) return res.sendStatus(401);
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findByPk(decoded.id);
-    if (!user) return res.sendStatus(403);
+if (!token) return res.sendStatus(401);
 
-    req.user = user;
-    next();
-  } catch (err) {
-    return res.status(403).json({ error: 'Ungültiger Token' });
-  }
+try {
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const user = await User.findByPk(decoded.id);
+  if (!user) return res.sendStatus(403);
+
+  req.user = user;
+  next();
+} catch (err) {
+  return res.status(403).json({ error: 'Ungültiger Token' });
+}
 };
 
 

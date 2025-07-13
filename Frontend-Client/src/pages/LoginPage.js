@@ -1,72 +1,99 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import QuizAcademyLogo from '../assets/QuizAcademyLogoBLANK.png';
-import './LoginPage.css'; 
+import { Link, useNavigate } from 'react-router-dom';
+import './LoginPage.css';
 
-const LoginPage = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const { login } = useAuth();
+function LoginPage() {
+// States zur Verwaltung der Eingaben und Fehlermeldung
+const [username, setUsername] = useState(''); // Benutzername aus dem Eingabefeld
+const [password, setPassword] = useState(''); // Passwort aus dem Eingabefeld
+const [errorMsg, setErrorMsg] = useState(''); // Fehlermeldung bei Login-Problemen
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
+// Hook für Navigation (Weiterleitung nach erfolgreichem Login)
+const navigate = useNavigate();
 
-    try {
-      const response = await fetch('http://localhost:3000/api/users/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // wichtig für Cookies/Sessions
-        body: JSON.stringify({ username, password }),
-      });
+// Event-Handler für das Absenden des Login-Formulars
+const handleLogin = async (e) => {
+  e.preventDefault(); // Verhindert das automatische Neuladen der Seite beim Formular-Submit
+  setErrorMsg(''); // Vor dem neuen Versuch die Fehlermeldung löschen
 
-      if (!response.ok) {
-        const data = await response.json();
-        setError(data.message || 'Login fehlgeschlagen');
-        return;
-      }
+  try {
+    // Anfrage an das Backend senden (Login-API)
+    const response = await fetch('/api/users/login', {
+      method: 'POST', // POST, da wir Daten (username + password) senden
+      headers: { 'Content-Type': 'application/json' }, // JSON-Daten werden geschickt
+      body: JSON.stringify({ username, password }), // Benutzerdaten in JSON umwandeln
+    });
 
-      const data = await response.json();
-      login(data.user); // Nutzer im Context speichern
-      navigate('/dashboard'); // zu geschützter Seite navigieren
-    } catch (err) {
-      setError('Netzwerkfehler: ' + err.message);
+    // Überprüfen, ob die Antwort erfolgreich war (Status 200-299)
+    if (!response.ok) {
+      // Wenn nicht erfolgreich, Fehlermeldung aus der Antwort auslesen
+      const errorData = await response.json();
+      setErrorMsg(errorData.error || 'Login fehlgeschlagen'); // Fehlermeldung anzeigen
+      return; // Funktion beenden, kein weiterverarbeiten
     }
-  };
 
-  return (
-    <div className="login-container">
-      <form onSubmit={handleSubmit} className="login-form-box">
-        <img src={QuizAcademyLogo} alt="IU QuizAcademy Logo" className="login-logo" />
-        <h2>Login</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <div className="form-group">
-          <label htmlFor="username">Benutzername:</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Passwort:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className="login-button">Einloggen</button>
-      </form>
-    </div>
-  );
+    // Erfolgreiche Antwort: Token und Username aus JSON auslesen
+    const data = await response.json();
+
+    // Token und Username lokal speichern (z.B. für weitere API-Anfragen)
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('username', data.username);
+
+    // Nach erfolgreichem Login zur MainPage / Dashboard weiterleiten
+    navigate('/dashboard');
+  } catch (error) {
+    // Fehler bei der Netzwerkkommunikation (z.B. Server nicht erreichbar)
+    setErrorMsg('Netzwerkfehler');
+    console.error(error); // Fehler in der Konsole ausgeben
+  }
 };
+
+return (
+  <div className="login-page">
+    <div className="login-box">
+      {/* Logo der Quiz-Academy */}
+      <img src="/logoQuizAcademypng.png" alt="IU-Quiz-Academy Logo" />
+
+      {/* Überschrift */}
+      <h1>Login zur IU-Quiz-Academy</h1>
+
+      {/* kurze Anleitung */}
+      <p>
+        Gib deinen <strong>Benutzernamen</strong> und dein Passwort ein, um fortzufahren.
+      </p>
+
+      {/* Login-Formular */}
+      <form onSubmit={handleLogin}>
+        {/* Eingabefeld für Benutzernamen */}
+        <input
+          type="text"
+          placeholder="Benutzername"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)} // State updaten bei Eingabe
+          required // Pflichtfeld
+        />
+        {/* Eingabefeld für Passwort */}
+        <input
+          type="password"
+          placeholder="Passwort"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)} // State updaten bei Eingabe
+          required // Pflichtfeld
+        />
+        {/* Submit-Button */}
+        <button type="submit">Einloggen</button>
+      </form>
+
+      {/* Anzeige einer Fehlermeldung, falls vorhanden */}
+      {errorMsg && <p style={{ color: 'red', marginTop: '1rem' }}>{errorMsg}</p>}
+
+      {/* Link zur Registrierungsseite */}
+      <div className="small-text">
+        <p>Noch kein Account? <Link to="/register">Jetzt registrieren</Link></p>
+      </div>
+    </div>
+  </div>
+);
+}
 
 export default LoginPage;

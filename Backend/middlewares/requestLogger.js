@@ -1,14 +1,14 @@
 const chalk = require('chalk');
 
 const requestLogger = (req, res, next) => {
-  const timestamp = new Date().toISOString();
-  const method = chalk.green(req.method);
-  const path = chalk.blue(req.originalUrl);
-  const user = req.user ? `User ID: ${req.user.id}` : 'Unauthenticated';
+const timestamp = new Date().toISOString();
+const method = chalk.green(req.method);
+const path = chalk.blue(req.originalUrl);
+const user = req.user ? `User ID: ${req.user.id}` : 'Unauthenticated';
 
-  console.log(`[${timestamp}] ${method} ${path} – ${user}`);
+console.log(`[${timestamp}] ${method} ${path} – ${user}`);
 
-  next();
+next();
 };
 
 module.exports = requestLogger;

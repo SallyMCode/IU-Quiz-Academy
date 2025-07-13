@@ -155,6 +155,73 @@ header h1 {
   background: #fcd34d;
 }
 
+.forum-post {
+  border-bottom: 1px solid #ccc;
+  padding: 0.5rem 0;
+}
+.thread-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.thread-title {
+  font-size: 1.8rem;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.forum-post {
+  background-color: #f9f9f9;
+  border-left: 4px solid #3498db;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.forum-post strong {
+  color: #2c3e50;
+}
+
+.forum-post small {
+  display: block;
+  color: #7f8c8d;
+  margin-top: 0.5rem;
+}
+
+.post-form {
+  margin-top: 2rem;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.post-form textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  resize: vertical;
+  margin-bottom: 0.5rem;
+}
+
+.post-form button {
+  padding: 0.6rem 1.2rem;
+  background-color: #3498db;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.post-form button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
 /* Admin Threads unterscheiden */
 .admin-thread {
   border-left-color: var(--link-color);

@@ -9,6 +9,8 @@ const AnswerInSession = require('./AnswerInSession');
 const QuizRoom = require('./QuizRoom');
 const QuizSession = require('./QuizSession');
 const Reason = require('./Reason');
+const ForumThread = require('./ForumThreads');
+const ForumPost = require('./ForumPost');
 
 
 // User <-> QuizRoom (1:n)
@@ -43,15 +45,33 @@ Question.hasMany(AnswerOption, { foreignKey: 'questionId', as: 'answerOptions' }
 Reason.belongsTo(Question, { foreignKey: 'questionId', as: 'question', onDelete: 'CASCADE' });
 Question.hasMany(Reason, { foreignKey: 'questionId', as: 'reasons' });
 
+// ForumThread <-> User (n:1)
+ForumThread.belongsTo(User, { foreignKey: 'user_id', as: 'author', onDelete: 'SET NULL' });
+User.hasMany(ForumThread, { foreignKey: 'user_id', as: 'forumThreads' });
+
+// ForumThread <-> QuizRoom (n:1)
+ForumThread.belongsTo(QuizRoom, { foreignKey: 'quiz_room_id', as: 'quizRoom', onDelete: 'CASCADE' });
+QuizRoom.hasMany(ForumThread, { foreignKey: 'quiz_room_id', as: 'forumThreads' });
+
+// ForumPost <-> ForumThread (n:1)
+ForumPost.belongsTo(ForumThread, { foreignKey: 'thread_id', as: 'thread', onDelete: 'CASCADE' });
+ForumThread.hasMany(ForumPost, { foreignKey: 'thread_id', as: 'posts' });
+
+// ForumPost <-> User (n:1)
+ForumPost.belongsTo(User, { foreignKey: 'user_id', as: 'author', onDelete: 'SET NULL' });
+User.hasMany(ForumPost, { foreignKey: 'user_id', as: 'forumPosts' });
+
 
 // Hier keine `sequelize.sync()` — nur Imports/Beziehungen
 module.exports = {
-  sequelize, // ❗️DAS HAT GEFEHLT IN DER VORHERIGEN VERSION
-  User,
-  Question,
-  AnswerOption,
-  AnswerInSession,
-  QuizRoom,
-  QuizSession,
-  Reason,
+sequelize, // ❗️DAS HAT GEFEHLT IN DER VORHERIGEN VERSION
+User,
+Question,
+AnswerOption,
+AnswerInSession,
+QuizRoom,
+QuizSession,
+Reason,
+ForumThread,
+ForumPost
 };

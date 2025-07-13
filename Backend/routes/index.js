@@ -9,6 +9,8 @@ const reasonRoutes = require('./reasonRoutes');
 const statisticsRoutes = require('./statisticsRoutes');
 const userMeRoutes = require('./userMeRoutes');
 const lastSessionRoutes = require('./lastSessionRoutes');
+const forumPostRoutes = require('./forumPostRoutes');
+const forumThreadRoutes = require('./forumThreadsRoutes');
 
 function registerRoutes(app) {
   app.use('/api/users', userRoutes);
@@ -20,7 +22,9 @@ function registerRoutes(app) {
   app.use('/api/reasons', reasonRoutes);
   app.use('/api/statistics', statisticsRoutes);
   app.use('/api/users/me', userMeRoutes);
-  app.use('/api/sessions/last', lastSessionRoute);
+  app.use('/api/sessions/last', lastSessionRoutes);
+  app.use('/api/forum-posts', forumPostRoutes);
+  app.use('/api/forum-threads', forumThreadRoutes);
 }
 
 module.exports = registerRoutes;

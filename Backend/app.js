@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { sequelize } = require('./config/database');
-const { User, AnswerInSession, AnswerOption, Question, QuizRoom, QuizSession, Reason } = require('./models');
+const { User, AnswerInSession, AnswerOption, Question, QuizRoom, QuizSession, Reason,ForumPost,ForumThread } = require('./models');
 const registerRoutes = require('./routes');
 const requestLogger = require('./middlewares/requestLogger');
 const errorHandler = require('./middlewares/errorHandler');
