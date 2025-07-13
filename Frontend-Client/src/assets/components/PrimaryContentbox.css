@@ -27,6 +27,7 @@
     flex-direction: column; /* Inhalte untereinander anordnen */
     align-items: center; /* Zentriert Inhalte horizontal innerhalb der Box (für ResultPage) */
     text-align: center; /* Text zentrieren (für ResultPage) */
+    border-left: 4px solid var(--secondary-yellow);
 }
 
 /* ========================================= */
