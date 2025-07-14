@@ -1,9 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Switch } from 'react-router-dom';
 
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
 import CommunityPage from './pages/CommunityPage';
+import LoginPage from './pages/LoginPage';
+import NewQuizRoomPage from './pages/NewQuizRoomPage';
+import QuizSession from './pages/QuizSession';
+import SuccessPage from './pages/SuccessPage';
 import Logout from './assets/components/Logout';
 import ThreadPage from './pages/ThreadPage'; // neue Komponente für einzelne Threads
 
