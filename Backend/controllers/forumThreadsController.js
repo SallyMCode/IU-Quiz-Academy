@@ -30,7 +30,7 @@ try {
 }
 };
 
-// Einzelnen Thread abrufen
+ // Einzelnen Thread abrufen
 const getThreadById = async (req, res) => {
 try {
   const thread = await ForumThread.findByPk(req.params.id, {

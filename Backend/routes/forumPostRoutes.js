@@ -9,3 +9,5 @@ router.get('/:threadId', forumPostController.getPostsByThread);
 router.post('/', forumPostController.createPost);
 
 module.exports = router;
+
+// Backend/routes/forumPostRoutes.js; Forumbeiträge-Routen

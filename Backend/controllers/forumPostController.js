@@ -1,6 +1,6 @@
 const { ForumPost, User } = require('../models');
 
-// Alle Posts eines Threads abrufen
+ // Alle Posts eines Threads abrufen
 const getPostsByThread = async (req, res) => {
 try {
   const { threadId } = req.params;
