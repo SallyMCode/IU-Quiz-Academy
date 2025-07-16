@@ -7,7 +7,7 @@ function NavBar() {
 return (
   <nav>
     <div className="nav-left">
-      <img src="/logoQuizAcademypng.png" alt="Logo" />
+      <img src={Logo} alt="Logo" />
       <div className="logo">IU-Quiz-Academy</div>
     </div>
     <ul>
