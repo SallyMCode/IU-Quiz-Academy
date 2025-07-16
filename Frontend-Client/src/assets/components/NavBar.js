@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Wichtig: Link importieren
+import Logo from '../images/QuizAcademylogoBLANK.png'; // Importiere das Logo
+
 
 function NavBar() {
 return (
