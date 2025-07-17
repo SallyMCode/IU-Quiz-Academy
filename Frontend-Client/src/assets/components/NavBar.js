@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Wichtig: Link importieren
-import Logo from '../images/QuizAcademylogoBLANK.png'; // Importiere das Logo
+import QuizAcademyLogo from '../images/QuizAcademylogoBLANK.png'; // Importiere das Logo
 
 
 function NavBar() {
 return (
   <nav>
     <div className="nav-left">
-      <img src="/logoQuizAcademypng.png" alt="Logo" />
+      <img src= {QuizAcademyLogo} alt="Logo" />
       <div className="logo">IU-Quiz-Academy</div>
     </div>
     <ul>

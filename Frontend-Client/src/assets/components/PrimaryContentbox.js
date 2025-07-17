@@ -2,10 +2,10 @@ import React from 'react';
 import './PrimaryContentbox.css';
 import OptionFieldGroup from './OptionfieldGroup'; // Wird nur im 'quiz' Modus benötigt
 import ButtonGroup from './ButtonGroup';
-import quizLogo from '../images/QuizAcademylogoBLANK.png'; 
+import quizLogo from '../images/QuizAcademylogoBLANK.png';
 
 // Die PrimaryContentBox empfängt nun eine 'mode' Prop und spezifische Daten basierend auf dem Modus
-const PrimaryContentBox = ({ mode, questionNumber, questionText, options,buttons, onOptionClick, mainMessage, subMessage }) => {
+const PrimaryContentbox = ({ mode, questionNumber, questionText, options, buttons, onOptionClick, mainMessage, subMessage, children }) => {
 
   // Bedingtes Rendering basierend auf dem 'mode'
   const renderContent = () => {
@@ -15,7 +15,7 @@ const PrimaryContentBox = ({ mode, questionNumber, questionText, options,buttons
           <p className="question-number-top">{questionNumber}</p>
           <p className="question-text">{questionText}</p>
           <OptionFieldGroup options={options} onOptionClick={onOptionClick} />
-           <ButtonGroup buttons= {buttons} />
+          <ButtonGroup buttons={buttons} />
         </>
       );
     } else if (mode === 'result') {
@@ -28,18 +28,25 @@ const PrimaryContentBox = ({ mode, questionNumber, questionText, options,buttons
         </>
       );
     }
-    // Optional: Fallback für unbekannte Modi
-    return <p>Kein gültiger Anzeigemodus für PrimaryContentBox.</p>;
+
+    else if (mode === 'newQuiz') {
+      return (<>
+        {children} {/* Hier werden die Kinder-Elemente (Inputfelder, Buttons) gerendert */}
+      </>
+      );
+    }
+      // Optional: Fallback für unbekannte Modi
+      return <p>Kein gültiger Anzeigemodus für PrimaryContentBox.</p>;
+    };
+
+    return (
+      <div className="content-box primary-content-box">
+        {renderContent()}
+      </div>
+    );
   };
 
-  return (
-    <div className="content-box primary-content-box">
-      {renderContent()}
-    </div>
-  );
-};
-
-export default PrimaryContentBox;
+  export default PrimaryContentbox;
 
 
 
