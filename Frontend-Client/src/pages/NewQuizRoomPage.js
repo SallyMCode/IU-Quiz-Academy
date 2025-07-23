@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import NavBar from '../assets/components/NavBar';
 import Header from '../assets/components/Header';
 import PrimaryContentBox from '../assets/components/PrimaryContentbox';
@@ -11,6 +12,8 @@ import './NewQuizRoomPage.css';
 const generateUniqueId = () => Math.random().toString(36).substring(2, 9);
 
 function NewQuizRoomPage() {
+
+  const navigate = useNavigate(); // Hook initialisieren
   // State für den Quizraum-Titel und ob er bereits gespeichert wurde
   const [quizRoomTitle, setQuizRoomTitle] = useState('');
   const [quizRoomSaved, setQuizRoomSaved] = useState(false);
@@ -94,9 +97,7 @@ function NewQuizRoomPage() {
 
   const handleGoToDashboard = () => {
     console.log('Navigiere zum Dashboard...');
-    alert('Du wirst zum Dashboard weitergeleitet!');
-    // Hier würde die Navigation zur Mainpage/Dashboard erfolgen, z.B. mit React Router:
-    // navigate('/dashboard');
+  navigate('/Dashboard'); // Navigiert zur Route /NewQuizroom
   };
 
   const primaryBoxButtons = [
@@ -199,7 +200,7 @@ function NewQuizRoomPage() {
       </PrimaryContentBox>
 
       {/* SecondaryContentBox für die Liste der gespeicherten Fragen */}
-      {/* <div className="secondary-content-box"> */}
+      <div className="secondary-content-box"> 
         {questions.length === 0 ? (
           <SecondaryContentBox mode="emptyList">
             <p>Noch keine Fragen hinzugefügt.</p>
@@ -220,7 +221,7 @@ function NewQuizRoomPage() {
             />
           ))
         )}
-        {/* </div> */}
+        /</div> 
         </div>
     </div>
   );

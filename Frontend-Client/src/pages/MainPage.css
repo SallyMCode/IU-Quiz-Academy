@@ -214,6 +214,7 @@ section {
   background: var(--card-bg);
   border: 2px dashed var(--primary-yellow);
   border-radius: 0.5rem;
+  padding-top: 5px;
   padding: 1rem;
   text-align: center;
   font-weight: bold;

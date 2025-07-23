@@ -88,10 +88,6 @@ return (
       {/* Anzeige einer Fehlermeldung, falls vorhanden */}
       {errorMsg && <p style={{ color: 'red', marginTop: '1rem' }}>{errorMsg}</p>}
 
-      {/* Link zur Registrierungsseite */}
-      <div className="small-text">
-        <p>Noch kein Account? <Link to="/register">Jetzt registrieren</Link></p>
-      </div>
     </div>
   </div>
 );
