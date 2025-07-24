@@ -2,8 +2,8 @@
     display: flex; /* Nutzt Flexbox, um Buttons nebeneinander anzuordnen */
     justify-content: center; /* Zentriert die Buttons horizontal im Container */
     gap: 20px; /* Abstand zwischen den Buttons */
-    margin-top: 40px; /* Abstand nach oben zur vorherigen Sektion (z.B. OptionFieldGroup) */
-    width: 100%; /* Nimmt die volle Breite ein, um die Zentrierung zu ermöglichen */
+    margin-top: 60px; /* Abstand nach oben zur vorherigen Sektion (z.B. OptionFieldGroup) */
+    width: 50%; /* Nimmt die volle Breite ein, um die Zentrierung zu ermöglichen */
 }
 
 /* Basis-Styling für alle Buttons in der Gruppe */

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import QuizAcademyLogo from '../assets/images/QuizAcademylogoBLANK.png'; // Importiere das Logo
 import './LoginPage.css';
 
 function LoginPage() {
@@ -52,10 +53,10 @@ return (
   <div className="login-page">
     <div className="login-box">
       {/* Logo der Quiz-Academy */}
-      <img src="/logoQuizAcademypng.png" alt="IU-Quiz-Academy Logo" />
+      <img src={QuizAcademyLogo} alt="IU-Quiz-Academy Logo" />
 
       {/* Überschrift */}
-      <h1>Login zur IU-Quiz-Academy</h1>
+      <h1>Login </h1>
 
       {/* kurze Anleitung */}
       <p>
@@ -87,10 +88,6 @@ return (
       {/* Anzeige einer Fehlermeldung, falls vorhanden */}
       {errorMsg && <p style={{ color: 'red', marginTop: '1rem' }}>{errorMsg}</p>}
 
-      {/* Link zur Registrierungsseite */}
-      <div className="small-text">
-        <p>Noch kein Account? <Link to="/register">Jetzt registrieren</Link></p>
-      </div>
     </div>
   </div>
 );

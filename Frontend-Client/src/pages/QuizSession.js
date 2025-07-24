@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './QuizSession.css';
 import PrimaryContentBox from '../assets/components/PrimaryContentbox';
 import SecondaryContentBox from '../assets/components/SecondaryContentbox';
+import { useNavigate } from 'react-router-dom'; 
 import ButtonGroup from '../assets/components/ButtonGroup';
 import NavBar from '../assets/components/NavBar';
 import Header from '../assets/components/Header';
@@ -12,6 +13,9 @@ const QuizSession = () => {
    // ==========================================
   // HARTKODIERTE BEISPIELDATEN FÜR DAS QUIZ
   // ==========================================
+
+
+  const navigate = useNavigate(); // Hook initialisieren
 
   // Daten für PrimaryContentBox
   const quizData = {
@@ -51,7 +55,7 @@ const QuizSession = () => {
 
   const handleCancelQuiz = () => {
     console.log("Quiz wird abgebrochen...");
-    alert("Das Quiz wird abgebrochen.");
+    navigate('/Dashboard'); // Navigiert zur Route /Dashboard;
   };
 
   // Daten für die Buttons der ButtonGroup
