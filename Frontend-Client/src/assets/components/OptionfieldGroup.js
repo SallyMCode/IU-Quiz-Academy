@@ -1,20 +1,18 @@
 import React from 'react';
 import './OptionfieldGroup.css';
 
-const OptionFieldGroup = ({ options, onOptionClick }) => {
-  return (
-    <div className="option-field-group">
-      {options.map((option, index) => (
-        <div
-          key={index} // Einzigartiger Schlüssel ist wichtig für React-Listen
-          className="option-item"
-          onClick={() => onOptionClick(option)} // Handler für Klick-Ereignis
-        >
-          {option}
-        </div>
-      ))}
-    </div>
-  );
-};
+const OptionFieldGroup = ({ options, onOptionClick, optionColor }) => (
+  <div className={`option-field-group${optionColor ? ' ' + optionColor : ''}`}>
+    {options.map((option, idx) => (
+      <div
+        key={idx}
+        className={`option-item${optionColor ? ' ' + optionColor : ''}`}
+        onClick={() => onOptionClick(option)}
+      >
+        {option}
+      </div>
+    ))}
+  </div>
+);
 
 export default OptionFieldGroup;

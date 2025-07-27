@@ -37,3 +37,51 @@
   border-radius: 8px;
   text-align: center;
 }
+
+.blue-title {
+  color: #2563EB;
+}
+
+.option-field-group.blue {
+  /* Blaue Boxen für öffentliche QuizRooms */
+}
+
+.option-item.blue {
+  background-color: #2563EB;
+  color: #fff;
+  border: 1px solid #2563EB;
+}
+
+.option-item.blue:hover {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.quizroom-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.add-quizroom-icon {
+  cursor: pointer;
+  margin-left: 16px;
+  display: flex;
+  align-items: center;
+  transition: transform 0.15s;
+}
+
+.add-quizroom-icon:active {
+  transform: scale(0.95);
+}
+
+
+
+.add-quizroom-bottom {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  margin-top: 32px;
+}

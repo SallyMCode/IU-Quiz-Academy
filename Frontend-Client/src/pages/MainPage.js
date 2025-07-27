@@ -72,29 +72,6 @@ return (
       {/* Statistiken */}
       <LearningKPIs />
 
-      {/* Eigene Quizräume */}
-      <QuizroomList />
-
-      {/* Öffentliche Räume */}
-      <section className="public-quizzes">
-        <h2>Öffentliche Quizräume</h2>
-        <p>
-          Du willst dich mit anderen Studierenden messen? Trete einem öffentlichen Raum bei und
-          stelle dein Wissen unter Beweis!
-        </p>
-        <ul>
-          <li>
-            🌐 Allgemeinwissen – <button className="join">Mitspielen</button>
-          </li>
-          <li>
-            🌐 Wirtschaftsmathe – <button className="join">Mitspielen</button>
-          </li>
-          <li>
-            🌐 Prüfungsfragen Mix – <button className="join">Mitspielen</button>
-          </li>
-        </ul>
-      </section>
-
       {/* Community-Forum-Box */}
       <CommunityBox />
     </div>

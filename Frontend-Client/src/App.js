@@ -9,6 +9,7 @@ import QuizSession from './pages/QuizSession';
 import SuccessPage from './pages/SuccessPage';
 import Logout from './assets/components/Logout';
 import ThreadPage from './pages/ThreadPage'; // neue Komponente für einzelne Threads
+import UserQuizRooms from './pages/UserQuizRooms'; 
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/Quizsession/SuccesPage" element={<SuccessPage />} />
         <Route path="/NewQuizroom" element={<NewQuizRoomPage />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/userquizrooms" element={<UserQuizRooms />} />
       </Routes>
     </Router>
   );
