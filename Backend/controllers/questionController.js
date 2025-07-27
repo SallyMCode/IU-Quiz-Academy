@@ -29,6 +29,21 @@ exports.createQuestion = async (req, res) => {
   }
 };
 
+// Controller-Funktion zum Abrufen einer einzelnen Frage per ID
+exports.getQuestionByID = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const question = await Question.findByPk(id);
+    if (!question) {
+      return res.status(404).json({ error: 'Frage nicht gefunden' });
+    }
+    res.json(question);
+  } catch (err) {
+    console.error('Fehler beim Abrufen der Frage:', err);
+    res.status(500).json({ error: 'Fehler beim Abrufen der Frage' });
+  }
+};
+
 // Controller-Funktion zum Abrufen aller Fragen eines bestimmten QuizRaums
 exports.getQuestionsByRoom = async (req, res) => {
   const { quizRoomId } = req.params; // QuizRoom-ID aus URL-Parameter auslesen

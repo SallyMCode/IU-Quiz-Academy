@@ -12,8 +12,7 @@ return (
     </div>
     <ul>
       <li><Link to="/dashboard">Dashboard</Link></li>
-      <li><a href="#">Quizräume</a></li>
-      <li><a href="#">Statistiken</a></li>
+      <li><Link to="/userquizrooms">Quizräume</Link></li>
       <li><Link to="/forum">Forum</Link></li>
       <li><Link to="/logout">Logout</Link></li>
     </ul>

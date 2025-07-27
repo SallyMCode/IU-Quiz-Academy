@@ -5,7 +5,7 @@ import ButtonGroup from './ButtonGroup';
 import quizLogo from '../images/QuizAcademylogoBLANK.png';
 
 // Die PrimaryContentBox empfängt nun eine 'mode' Prop und spezifische Daten basierend auf dem Modus
-const PrimaryContentbox = ({ mode, questionNumber, questionText, options, buttons, onOptionClick, mainMessage, subMessage, children }) => {
+const PrimaryContentbox = ({ mode, questionNumber, questionText, options, buttons, onOptionClick, mainMessage, subMessage, children, customBorder }) => {
 
   // Bedingtes Rendering basierend auf dem 'mode'
   const renderContent = () => {
@@ -40,7 +40,10 @@ const PrimaryContentbox = ({ mode, questionNumber, questionText, options, button
     };
 
     return (
-      <div className="content-box primary-content-box">
+      <div
+        className="content-box primary-content-box"
+        customborder={customBorder}
+      >
         {renderContent()}
       </div>
     );

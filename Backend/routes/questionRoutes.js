@@ -30,6 +30,20 @@ router.post(
 questionController.createQuestion
 );
 
+// Eine Frage abrufen by ID
+
+router.get(
+'/:id',
+[
+  param('id')
+    .isInt({ gt: 0 })
+    .withMessage('ID muss eine positive Zahl sein.'),
+  validate,
+],
+questionController.getQuestionByID  
+);
+
+
 // Alle Fragen zu einem Raum abrufen – quizRoomId als Param validieren
 router.get(
 '/room/:quizRoomId',
@@ -41,6 +55,7 @@ router.get(
 ],
 questionController.getQuestionsByRoom
 );
+
 
 // Frage löschen – id als Param validieren
 router.delete(

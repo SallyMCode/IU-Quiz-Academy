@@ -1,0 +1,39 @@
+.user-quizrooms-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding: 40px 0;
+}
+
+.section-title {
+  color: #ffc107;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.primary-content-box[customborder="yellow"] {
+  border-left: 4px solid #ffc107;
+}
+
+.primary-content-box[customborder="blue"] {
+  border-left: 4px solid #2563EB;
+}
+
+.error-message {
+  color: #d32f2f;
+  background: #fffbe6;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.empty-message {
+  color: #616161;
+  background: #f7f7f7;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+}

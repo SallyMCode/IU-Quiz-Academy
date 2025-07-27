@@ -17,7 +17,7 @@ function registerRoutes(app) {
   app.use('/api/sessions', quizSessionRoutes);
   app.use('/api/quizrooms', quizRoomRoutes);
   app.use('/api/questions', questionRoutes);
-  app.use('/api/answer-options', answerOptionRoutes);
+  app.use('/api/answeroptions', answerOptionRoutes);
   app.use('/api/answers-in-session', answerInSessionRoutes);
   app.use('/api/reasons', reasonRoutes);
   app.use('/api/statistics', statisticsRoutes);
