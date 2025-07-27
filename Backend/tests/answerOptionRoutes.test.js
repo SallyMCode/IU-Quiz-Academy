@@ -38,7 +38,7 @@ describe('AnswerOption API Tests', () => {
   // Test für das Erstellen einer Antwortoption per POST
   test('POST /api/answer-options - erstellt neue Antwortoption', async () => {
     const response = await request(app)
-      .post('/api/answer-options')
+      .post('/api/answeroptions')
       .send({
         questionId: testQuestion.id,   // Verknüpfung mit der vorher erstellten Testfrage
         optionIndex: 0,
@@ -58,7 +58,7 @@ describe('AnswerOption API Tests', () => {
 
   // Test für das Abrufen aller Antwortoptionen zu einer bestimmten Frage
   test('GET /api/answer-options/question/:questionId - gibt Optionen zur Frage zurück', async () => {
-    const response = await request(app).get(`/api/answer-options/question/${testQuestion.id}`);
+    const response = await request(app).get(`/api/answeroptions/question/${testQuestion.id}`);
 
     // Erwartet wird HTTP-Status 200 (OK)
     expect(response.status).toBe(200);
@@ -72,14 +72,14 @@ describe('AnswerOption API Tests', () => {
 
   // Test für das Löschen einer Antwortoption
   test('DELETE /api/answer-options/:id - löscht Antwortoption', async () => {
-    const response = await request(app).delete(`/api/answer-options/${createdOption.id}`);
+    const response = await request(app).delete(`/api/answeroptions/${createdOption.id}`);
 
     // Erwartet wird HTTP-Status 200 und eine Erfolgsmeldung
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ message: 'Antwortoption gelöscht' });
 
     // Zusatztest: derselbe Löschversuch nochmal -> sollte 404 zurückgeben
-    const secondTry = await request(app).delete(`/api/answer-options/${createdOption.id}`);
+    const secondTry = await request(app).delete(`/api/answeroptions/${createdOption.id}`);
     expect(secondTry.status).toBe(404);
   });
 });
