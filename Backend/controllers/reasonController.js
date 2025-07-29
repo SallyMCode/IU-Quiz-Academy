@@ -43,6 +43,37 @@ exports.getReasonsByQuestion = async (req, res) => {
   }
 };
 
+// Controller: Begründung aktualisieren per ID
+exports.updateReason = async (req, res) => {
+  const { id } = req.params;
+  const { reasonText, reasonIndex } = req.body;
+
+  // Validierung: Mindestens eines der Felder muss übergeben werden
+  if (reasonText === undefined && reasonIndex === undefined) {
+    return res.status(400).json({ error: 'mindestens reasonText oder reasonIndex muss übergeben werden.' });
+  }
+
+  try {
+    // Bestehende Begründung suchen
+    const reason = await Reason.findByPk(id);
+
+    if (!reason) {
+      return res.status(404).json({ error: 'Begründung nicht gefunden' });
+    }
+
+    // Felder aktualisieren, falls vorhanden
+    if (reasonText !== undefined) reason.reasonText = reasonText;
+    if (reasonIndex !== undefined) reason.reasonIndex = reasonIndex;
+
+    await reason.save(); // Änderungen speichern
+
+    res.json(reason); // Aktualisierte Begründung zurückgeben
+  } catch (err) {
+    console.error('Fehler beim Aktualisieren der Begründung:', err);
+    res.status(500).json({ error: 'Fehler beim Aktualisieren der Begründung' });
+  }
+};
+
 // Controller: Begründung löschen per ID
 exports.deleteReason = async (req, res) => {
   const { id } = req.params; // Begründungs-ID aus URL

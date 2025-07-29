@@ -6,9 +6,11 @@ const request = require('supertest');
 const app = require('../app');
 
 // Importiert die Sequelize-Instanz und alle Modelle
-const { sequelize, User, Question, QuizRoom, QuizSession, AnswerInSession, Reason, AnswerOption } = require('../models');
+const { sequelize, User, Question, QuizRoom } = require('../models');
 
 let testRoom; // Referenz auf einen angelegten Raum, der für die Tests verwendet wird
+let createdUser; // Erstellt einen Benutzer global, um ID wiederzuverwenden
+let createdQuestion; // Speichert erstellte Frage für spätere Tests
 
 // Wird einmal vor allen Tests ausgeführt
 beforeAll(async () => {
@@ -16,10 +18,10 @@ beforeAll(async () => {
   await sequelize.sync({ force: true });
 
   // Erstellt einen Benutzer, um einen QuizRoom anzulegen
-  const user = await User.create({ username: 'testuser', passwordHash: 'secret' });
+  createdUser = await User.create({ username: 'testuser', passwordHash: 'secret' });
 
   // Erstellt einen QuizRoom (Fragenraum), in dem später Fragen angelegt werden
-  testRoom = await QuizRoom.create({ title: 'Test-Raum', public: true, creatorId: user.id });
+  testRoom = await QuizRoom.create({ title: 'Test-Raum', public: true, creatorId: createdUser.id });
 });
 
 // Wird nach allen Tests ausgeführt
@@ -29,7 +31,6 @@ afterAll(async () => {
 
 // Test-Suite für die API-Endpunkte zum Verwalten von Fragen
 describe('Question API Tests (abgestimmt auf Controller)', () => {
-  let createdQuestion; // Speichert erstellte Frage für spätere Tests
 
   // Test: Neue Frage erfolgreich anlegen
   test('POST /api/questions - erstellt neue Frage', async () => {
@@ -46,7 +47,7 @@ describe('Question API Tests (abgestimmt auf Controller)', () => {
     expect(res.body).toHaveProperty('id');
     expect(res.body.questionText).toBe('Was ist 2 + 2?');
 
-    // Speichert die Frage für spätere Tests (z. B. Löschen)
+    // Speichert die Frage für spätere Tests (z. B. Aktualisieren oder Löschen)
     createdQuestion = res.body;
   });
 
@@ -59,6 +60,28 @@ describe('Question API Tests (abgestimmt auf Controller)', () => {
     expect(Array.isArray(res.body)).toBe(true);
     expect(res.body.length).toBeGreaterThan(0);
     expect(res.body[0].quizRoomId).toBe(testRoom.id);
+  });
+
+  // Test: PUT /api/questions/:id - aktualisiert eine bestehende Frage
+  test('PUT /api/questions/:id - aktualisiert die Frage erfolgreich', async () => {
+    const res = await request(app)
+      .put(`/api/questions/${createdQuestion.id}`)
+      .send({
+        questionText: 'Wie viel ist 3 + 3?',
+        correctAnswerIndex: 0
+      });
+
+    // Erwartung: Erfolgreiche Aktualisierung
+expect(res.status).toBe(200);
+expect(res.body).toHaveProperty('id', createdQuestion.id);
+expect(res.body.questionText).toBe('Wie viel ist 3 + 3?');
+expect(res.body.correctAnswerIndex).toBe(0);
+
+    // Überprüft, ob die Frage aktualisiert wurde
+    const check = await request(app).get(`/api/questions/${createdQuestion.id}`);
+    expect(check.status).toBe(200);
+    expect(check.body.questionText).toBe('Wie viel ist 3 + 3?');
+    expect(check.body.correctAnswerIndex).toBe(0);
   });
 
   // Test: Frage löschen
@@ -80,7 +103,7 @@ describe('Question API Tests (abgestimmt auf Controller)', () => {
     const res = await request(app)
       .post('/api/questions')
       .send({
-        correctAnswerIndex: 0, // Fehlende Felder: quizRoomId, questionText
+        correctAnswerIndex: 0 // Fehlende Felder: quizRoomId, questionText
       });
 
     // Erwartung: HTTP 400 und Liste von Validierungsfehlern

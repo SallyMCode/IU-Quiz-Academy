@@ -56,6 +56,29 @@ router.get(
 questionController.getQuestionsByRoom
 );
 
+// Frage aktualisieren – PUT /:id mit Validierung
+router.put(
+  '/:id',
+  [
+    param('id')
+      .isInt({ gt: 0 })
+      .withMessage('ID muss eine positive Zahl sein.'),
+    body('questionText')
+      .optional()
+      .isLength({ min: 5 })
+      .withMessage('Fragetext muss mindestens 5 Zeichen lang sein.'),
+    body('correctAnswerIndex')
+      .optional()
+      .isInt({ min: 0 })
+      .withMessage('correctAnswerIndex muss eine ganze Zahl >= 0 sein.'),
+    body('quizRoomId')
+      .optional()
+      .isInt({ gt: 0 })
+      .withMessage('quizRoomId muss eine positive Zahl sein.'),
+    validate,
+  ],
+  questionController.updateQuestion
+);
 
 // Frage löschen – id als Param validieren
 router.delete(

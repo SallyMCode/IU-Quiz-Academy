@@ -70,3 +70,34 @@ exports.deleteAnswerOption = async (req, res) => {
     res.status(500).json({ error: 'Fehler beim Löschen der Antwortoption' });
   }
 };
+
+// Neue Controller-Funktion zum Aktualisieren einer Antwortoption anhand der ID
+exports.updateAnswerOption = async (req, res) => {
+  const { id } = req.params; // ID der zu aktualisierenden Antwortoption
+  const { questionId, optionIndex, optionText } = req.body; // Mögliche neue Werte
+
+  try {
+    // Antwortoption anhand der ID suchen
+    const option = await AnswerOption.findByPk(id);
+
+    if (!option) {
+      // Wenn nicht gefunden, 404 zurückgeben
+      return res.status(404).json({ error: 'Antwortoption nicht gefunden' });
+    }
+
+    // Nur Felder aktualisieren, die im Body mitgegeben wurden
+    if (questionId !== undefined) option.questionId = questionId;
+    if (optionIndex !== undefined) option.optionIndex = optionIndex;
+    if (optionText !== undefined) option.optionText = optionText;
+
+    // Änderungen speichern
+    await option.save();
+
+    // Erfolgreiche Antwort mit aktualisierter Antwortoption zurückgeben
+    res.json(option);
+  } catch (err) {
+    // Fehlerbehandlung
+    console.error('Fehler beim Aktualisieren der Antwortoption:', err);
+    res.status(500).json({ error: 'Fehler beim Aktualisieren der Antwortoption' });
+  }
+};

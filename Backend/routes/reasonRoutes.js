@@ -8,6 +8,9 @@ router.post('/', reasonController.createReason);
 // Begründungen zu einer Frage
 router.get('/question/:questionId', reasonController.getReasonsByQuestion);
 
+// Begründung aktualisieren
+router.put('/:id', reasonController.updateReason);
+
 // Begründung löschen
 router.delete('/:id', reasonController.deleteReason);
 

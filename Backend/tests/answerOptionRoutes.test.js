@@ -70,6 +70,24 @@ describe('AnswerOption API Tests', () => {
     expect(response.body[0]).toHaveProperty('questionId', testQuestion.id);
   });
 
+  // Neuer Test für das Aktualisieren einer Antwortoption per PUT
+  test('PUT /api/answer-options/:id - aktualisiert eine Antwortoption', async () => {
+    const response = await request(app)
+      .put(`/api/answeroptions/${createdOption.id}`)
+      .send({
+        optionText: 'Acht',      // Aktualisierter Text
+        optionIndex: 1,          // Neuer Index
+      });
+
+    // Erwartet wird HTTP-Status 200 (OK)
+    expect(response.status).toBe(200);
+
+    // Antwort enthält aktualisierte Werte
+    expect(response.body).toHaveProperty('id', createdOption.id);
+    expect(response.body.optionText).toBe('Acht');
+    expect(response.body.optionIndex).toBe(1);
+  });
+
   // Test für das Löschen einer Antwortoption
   test('DELETE /api/answer-options/:id - löscht Antwortoption', async () => {
     const response = await request(app).delete(`/api/answeroptions/${createdOption.id}`);

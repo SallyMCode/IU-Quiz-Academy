@@ -8,6 +8,9 @@ router.post('/', answerOptionController.createAnswerOption);
 // Alle Optionen zu einer Frage abrufen
 router.get('/question/:questionId', answerOptionController.getOptionsByQuestion);
 
+// Antwortoption aktualisieren (PUT) 
+router.put('/:id', answerOptionController.updateAnswerOption);
+
 // Eine Antwortoption löschen
 router.delete('/:id', answerOptionController.deleteAnswerOption);
 

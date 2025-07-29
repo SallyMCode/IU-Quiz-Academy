@@ -51,7 +51,7 @@ describe('Reason API Tests', () => {
     expect(response.body).toHaveProperty('questionId', question.id);
     expect(response.body).toHaveProperty('reasonText', 'Weil Licht gestreut wird.');
 
-    // Speichern für nachfolgenden DELETE-Test
+    // Speichern für nachfolgende Tests
     createdReason = response.body;
   });
 
@@ -64,6 +64,22 @@ describe('Reason API Tests', () => {
     expect(Array.isArray(response.body)).toBe(true);
     expect(response.body.length).toBeGreaterThan(0);
     expect(response.body[0]).toHaveProperty('reasonText');
+  });
+
+  // Test: Begründung aktualisieren
+  test('PUT /api/reasons/:id – aktualisiert eine bestehende Begründung', async () => {
+    const response = await request(app)
+      .put(`/api/reasons/${createdReason.id}`)
+      .send({
+        reasonText: 'Weil Sonnenlicht an Luftmolekülen gestreut wird.',
+        reasonIndex: 1
+      });
+
+    // Erwartung: HTTP 200, Rückgabe enthält aktualisierte Felder
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id', createdReason.id);
+    expect(response.body).toHaveProperty('reasonText', 'Weil Sonnenlicht an Luftmolekülen gestreut wird.');
+    expect(response.body).toHaveProperty('reasonIndex', 1);
   });
 
   // Test: Begründung löschen und prüfen, dass sie nicht erneut gelöscht werden kann

@@ -64,6 +64,42 @@ exports.getQuestionsByRoom = async (req, res) => {
   }
 };
 
+// Controller-Funktion zum Aktualisieren einer Frage anhand ihrer ID
+exports.updateQuestion = async (req, res) => {
+  const { id } = req.params; // ID der zu aktualisierenden Frage
+  const { questionText, correctAnswerIndex, quizRoomId } = req.body; // Neue Werte aus dem Body
+
+  try {
+    // Die Frage anhand der ID finden
+    const question = await Question.findByPk(id);
+
+    if (!question) {
+      return res.status(404).json({ error: 'Frage nicht gefunden' });
+    }
+
+    // Nur die Felder aktualisieren, die im Body enthalten sind
+    if (questionText !== undefined) {
+      question.questionText = questionText;
+    }
+    if (correctAnswerIndex !== undefined) {
+      question.correctAnswerIndex = correctAnswerIndex;
+    }
+    if (quizRoomId !== undefined) {
+      question.quizRoomId = quizRoomId;
+    }
+
+    // Speichern der Änderungen
+    await question.save();
+
+    // Erfolgreiche Antwort mit aktualisierter Frage
+    res.json(question);
+  } catch (err) {
+    // Fehlerbehandlung
+    console.error('Fehler beim Aktualisieren der Frage:', err);
+    res.status(500).json({ error: 'Fehler beim Aktualisieren der Frage' });
+  }
+};
+
 // Controller-Funktion zum Löschen einer Frage anhand ihrer ID
 exports.deleteQuestion = async (req, res) => {
   const { id } = req.params; // ID aus URL-Parameter
