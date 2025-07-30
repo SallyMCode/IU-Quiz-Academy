@@ -3,7 +3,7 @@
 /* ========================================= */
 .secondary-content-box {
     /* Diese Regeln gelten für EINE einzelne SecondaryContentBox */
-    flex: 1 1 0; /*<<< WICHTIG: Erlaubt Schrumpfen und Wachsen, aber bevorzugt 1/3 */
+    flex: 1 1 0;/*< WICHTIG: Erlaubt Schrumpfen und Wachsen, aber bevorzugt 1/3 */
     min-width: 300px; /* Mindestbreite, um Inhalte nicht zu sehr zu stauchen */
     /*max-width: 50%;  <<< WICHTIG: Maximal 30% der verfügbaren Breite, damit sie 1/3 einnimmt */
     align-self: flex-start; /* <<< WICHTIG: Richtet diese einzelne Box oben in ihrer Zeile aus */
@@ -183,4 +183,12 @@
     display: flex;
     justify-content: space-around; /* Buttons gleichmäßig verteilen */
     width: 100%;
+}
+
+/* HIGHLIGHT-STYLE FÜR BEARBEITBARE FIELDS IN DER SECONDARYCONTENTBOX */
+.secondary-content-box.highlight-edit {
+  background: #fffbe6;
+  border: 2px solid #ffc107;
+  box-shadow: 0 0 0 3px #ffe066;
+  filter: contrast(1.2);
 }

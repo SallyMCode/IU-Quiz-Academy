@@ -5,7 +5,6 @@ import './MainPage.css';
 import NavBar from '../assets/components/NavBar';
 import Header from '../assets/components/Header';
 import LearningKPIs from '../assets/components/LearningKPIs';
-import QuizroomList from '../assets/components/QuizroomList';
 import CommunityBox from '../assets/components/CommunityBox';
 
 function MainPage() {

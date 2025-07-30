@@ -14,7 +14,7 @@ const forumThreadRoutes = require('./forumThreadsRoutes');
 
 function registerRoutes(app) {
   app.use('/api/users', userRoutes);
-  app.use('/api/sessions', quizSessionRoutes);
+  app.use('/api/quizsessions', quizSessionRoutes);
   app.use('/api/quizrooms', quizRoomRoutes);
   app.use('/api/questions', questionRoutes);
   app.use('/api/answeroptions', answerOptionRoutes);

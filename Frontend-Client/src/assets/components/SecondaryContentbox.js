@@ -20,7 +20,8 @@ const SecondaryContentBox = ({
     answers,               // Neu für newQuiz Modus
     correctAnswerIndex,    // Neu für newQuiz Modus
     buttonsData,           // Neu für newQuiz Modus (für Bearbeiten/Löschen Buttons)
-    children               // Für emptyList Modus
+    children,              // Für emptyList Modus
+    highlight               // Neu: Prop um die Hervorhebung zu steuern
 }) => {
 
     const renderContent = () => {
@@ -97,7 +98,7 @@ const SecondaryContentBox = ({
     };
 
     return (
-        <div className="content-box secondary-content-box">
+        <div className={`content-box secondary-content-box${highlight ? ' highlight-edit' : ''}`}>
             {renderContent()}
         </div>
     );

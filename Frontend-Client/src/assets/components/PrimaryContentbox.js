@@ -14,7 +14,9 @@ const PrimaryContentbox = ({ mode, questionNumber, questionText, options, button
         <>
           <p className="question-number-top">{questionNumber}</p>
           <p className="question-text">{questionText}</p>
-          <OptionFieldGroup options={options} onOptionClick={onOptionClick} />
+          <OptionFieldGroup
+            options={options}
+          />
           <ButtonGroup buttons={buttons} />
         </>
       );

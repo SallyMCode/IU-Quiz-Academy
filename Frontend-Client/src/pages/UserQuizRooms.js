@@ -6,15 +6,9 @@ import Header from '../assets/components/Header';
 import { useNavigate } from 'react-router-dom';
 import './UserQuizRooms.css';
 
-const STATIC_PUBLIC_QUIZROOMS = [
-  'Allgemeinwissen',
-  'Mathematik für IT',
-  'Englisch Basics',
-  'Projektmanagement',
-];
-
 function UserQuizRooms() {
   const [userQuizRooms, setUserQuizRooms] = useState([]);
+  const [publicQuizRooms, setPublicQuizRooms] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -23,23 +17,36 @@ function UserQuizRooms() {
   const userId = 1;
 
   useEffect(() => {
-    async function fetchUserQuizRooms() {
+    async function fetchQuizRooms() {
       setLoading(true);
       setError(null);
       try {
         const response = await fetch('http://localhost:5000/api/quizrooms');
         if (!response.ok) throw new Error('QuizRooms konnten nicht geladen werden');
         const allRooms = await response.json();
-        const myRooms = allRooms.filter(room => room.creator && room.creator.id === userId);
+
+        // UserQuizRooms: creator.id === userId && public === false
+        const myRooms = allRooms.filter(
+          room =>
+            room.creator &&
+            room.creator.id === userId &&
+            (room.public === false || room.public === 0)
+        );
         setUserQuizRooms(myRooms);
+
+        // PublicQuizRooms: public === true
+        const publicRooms = allRooms.filter(room => room.public === true || room.public === 1);
+        setPublicQuizRooms(publicRooms);
+
       } catch (err) {
         setError(err.message);
         setUserQuizRooms([]);
+        setPublicQuizRooms([]);
       } finally {
         setLoading(false);
       }
     }
-    fetchUserQuizRooms();
+    fetchQuizRooms();
   }, []);
 
   return (
@@ -50,7 +57,8 @@ function UserQuizRooms() {
       <div className="user-quizrooms-page">
         <PrimaryContentbox mode="newQuiz" customBorder="yellow">
           <div className="quizroom-header-row">
-            <h1>🧑‍🏫</h1><h2 className="section-title">Meine Quiz Rooms</h2>
+            <h1>🧑‍🏫</h1>
+            <h2 className="section-title">Meine Quiz Rooms</h2>
           </div>
           {loading ? (
             <div className="spinner">Lade QuizRooms...</div>
@@ -60,8 +68,8 @@ function UserQuizRooms() {
             <div className="empty-message">Du hast noch keine eigenen QuizRooms.</div>
           ) : (
             <OptionFieldGroup
-              options={userQuizRooms.map(room => room.title)}
-              onOptionClick={roomTitle => alert(`QuizRoom "${roomTitle}" ausgewählt`)}
+              options={userQuizRooms}
+              onOptionClick={room => navigate(`/Quizsession?quizRoomId=${room.id}`)}
             />
           )}
           <div className="add-quizroom-bottom">
@@ -83,12 +91,20 @@ function UserQuizRooms() {
         </PrimaryContentbox>
 
         <PrimaryContentbox mode="newQuiz" customBorder="blue">
-          <h2 className="section-title blue-title">Öffentliche Quiz Rooms</h2>
-          <OptionFieldGroup
-            options={STATIC_PUBLIC_QUIZROOMS}
-            onOptionClick={roomTitle => alert(`Öffentlicher QuizRoom "${roomTitle}" ausgewählt`)}
-            optionColor="blue"
-          />
+          <h2 className="section-title blue-title">🔓Öffentliche Quiz Rooms</h2>
+          {loading ? (
+            <div className="spinner">Lade QuizRooms...</div>
+          ) : error ? (
+            <div className="error-message">{error}</div>
+          ) : publicQuizRooms.length === 0 ? (
+            <div className="empty-message">Keine öffentlichen QuizRooms vorhanden.</div>
+          ) : (
+            <OptionFieldGroup
+              options={publicQuizRooms}
+              onOptionClick={room => navigate(`/Quizsession?quizRoomId=${room.id}`)}
+              optionColor="blue"
+            />
+          )}
         </PrimaryContentbox>
       </div>
     </div>

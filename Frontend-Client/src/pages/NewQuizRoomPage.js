@@ -27,6 +27,9 @@ function NewQuizRoomPage() {
   });
 
   const [questions, setQuestions] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [editQuestionIndex, setEditQuestionIndex] = useState(null);
+  const [editQuestionId, setEditQuestionId] = useState(null);
 
   // Request zur QuizRoom-Anlage nach Verlassen des Textfeldes
   const handleQuizRoomBlur = async () => {
@@ -91,6 +94,91 @@ function NewQuizRoomPage() {
     }
 
     try {
+      let questionId = editMode ? editQuestionId : null;
+
+      if (editMode) {
+        // 1. Frage updaten
+        await sendRequest(
+          `http://localhost:5000/api/questions/${questionId}`,
+          'PUT',
+          JSON.stringify({
+            questionText: currentQuestion.questionText,
+            correctAnswerIndex: parseInt(currentQuestion.correctAnswerIndex, 10),
+            quizRoomId: quizRoomId
+          }),
+          { 'Content-Type': 'application/json' }
+        );
+
+        // 2. Antwortoptionen updaten
+        const options = await sendRequest(
+          `http://localhost:5000/api/answeroptions/question/${questionId}`,
+          'GET'
+        );
+        for (let i = 0; i < options.length; i++) {
+          await sendRequest(
+            `http://localhost:5000/api/answeroptions/${options[i].id}`,
+            'PUT',
+            JSON.stringify({
+              optionText: currentQuestion.answers[i],
+              optionIndex: i
+            }),
+            { 'Content-Type': 'application/json' }
+          );
+        }
+
+        // 3. Begründung updaten (nur wenn vorhanden)
+        const reasons = await sendRequest(
+          `http://localhost:5000/api/reasons/question/${questionId}`,
+          'GET'
+        );
+        if (reasons.length > 0) {
+          await sendRequest(
+            `http://localhost:5000/api/reasons/${reasons[0].id}`,
+            'PUT',
+            JSON.stringify({
+              reasonText: currentQuestion.answerExplanation,
+              reasonIndex: parseInt(currentQuestion.correctAnswerIndex, 10)
+            }),
+            { 'Content-Type': 'application/json' }
+          );
+        } else if (currentQuestion.answerExplanation && currentQuestion.answerExplanation.trim().length > 0) {
+          // Falls keine Begründung existiert, neu anlegen
+          await sendRequest(
+            'http://localhost:5000/api/reasons',
+            'POST',
+            JSON.stringify({
+              questionId: questionId,
+              reasonText: currentQuestion.answerExplanation,
+              reasonIndex: parseInt(currentQuestion.correctAnswerIndex, 10)
+            }),
+            { 'Content-Type': 'application/json' }
+          );
+        }
+
+        // Lokalen State aktualisieren
+        const updatedQuestions = [...questions];
+        updatedQuestions[editQuestionIndex] = {
+          ...updatedQuestions[editQuestionIndex],
+          question_text: currentQuestion.questionText,
+          answers: [...currentQuestion.answers],
+          correct_answer_index: parseInt(currentQuestion.correctAnswerIndex, 10),
+          answer_explanation: currentQuestion.answerExplanation || '',
+        };
+        setQuestions(updatedQuestions);
+
+        setEditMode(false);
+        setEditQuestionIndex(null);
+        setEditQuestionId(null);
+        setCurrentQuestion({
+          questionText: '',
+          answers: ['', '', '', ''],
+          correctAnswerIndex: '0',
+          answerExplanation: ''
+        });
+        alert('Frage erfolgreich aktualisiert!');
+        return;
+      }
+
       // 1. Frage anlegen
       const questionResponse = await sendRequest(
         'http://localhost:5000/api/questions',
@@ -102,7 +190,7 @@ function NewQuizRoomPage() {
         }),
         { 'Content-Type': 'application/json' }
       );
-      const questionId = questionResponse.id;
+      questionId = questionResponse.id;
 
       // 2. Antwortoptionen anlegen
       for (let i = 0; i < currentQuestion.answers.length; i++) {
@@ -207,7 +295,18 @@ function NewQuizRoomPage() {
   };
 
   const handleEditQuestion = (questionId) => {
-    alert(`Bearbeiten-Funktion für Frage ${questionId} noch nicht implementiert.`);
+    const idx = questions.findIndex(q => q.id === questionId);
+    if (idx === -1) return;
+    setEditMode(true);
+    setEditQuestionIndex(idx);
+    setEditQuestionId(questionId);
+    const q = questions[idx];
+    setCurrentQuestion({
+      questionText: q.question_text,
+      answers: [...q.answers],
+      correctAnswerIndex: q.correct_answer_index.toString(),
+      answerExplanation: q.answer_explanation || ''
+    });
   };
 
   const primaryBoxButtons = [
@@ -243,6 +342,12 @@ function NewQuizRoomPage() {
             <h2 className="saved-quiz-room-title" style={{ color: '#ffc107' }}>
               QuizRoom: {quizRoomTitle}
             </h2>
+          )}
+
+          {editMode && (
+            <div style={{ textAlign: 'center', color: '#ffc107', fontWeight: 600, fontSize: '1.2em', marginBottom: 16 }}>
+              Frage {editQuestionIndex + 1} wird bearbeitet
+            </div>
           )}
 
           <div className="input-group">
@@ -321,9 +426,20 @@ function NewQuizRoomPage() {
                 answers={q.answers}
                 correctAnswerIndex={q.correct_answer_index}
                 buttonsData={[
-                  { label: 'Löschen', type: 'secondary', onClick: () => handleDeleteQuestion(q.id) },
-                  { label: 'Bearbeiten', type: 'primary', onClick: () => handleEditQuestion(q.id) }
+                  {
+                    label: 'Löschen',
+                    type: 'secondary',
+                    onClick: () => handleDeleteQuestion(q.id),
+                    disabled: editMode && editQuestionId === q.id
+                  },
+                  {
+                    label: 'Bearbeiten',
+                    type: 'primary',
+                    onClick: () => handleEditQuestion(q.id),
+                    disabled: editMode && editQuestionId === q.id
+                  }
                 ]}
+                highlight={editMode && editQuestionId === q.id} 
               />
             ))
           }

@@ -1,48 +1,115 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import PrimaryContentbox from '../assets/components/PrimaryContentbox';
+import SecondaryContentbox from '../assets/components/SecondaryContentbox';
 import './QuizSession.css';
-import PrimaryContentBox from '../assets/components/PrimaryContentbox';
-import SecondaryContentBox from '../assets/components/SecondaryContentbox';
-import { useNavigate } from 'react-router-dom'; 
 import ButtonGroup from '../assets/components/ButtonGroup';
 import NavBar from '../assets/components/NavBar';
-import Header from '../assets/components/Header';
+import OptionfieldGroup from '../assets/components/OptionfieldGroup';
 
+function QuizSession() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const params = new URLSearchParams(location.search);
+  const quizRoomId = params.get('quizRoomId');
+  const sessionIdFromUrl = params.get('sessionId');
 
+  const [sessionId, setSessionId] = useState(sessionIdFromUrl || null);
+  const [questions, setQuestions] = useState([]);
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [options, setOptions] = useState([]);
+  const [quizRoomTitle, setQuizRoomTitle] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [userQuizRooms, setUserQuizRooms] = useState([]);
+  const [error, setError] = useState(null);
 
-const QuizSession = () => {
-   // ==========================================
-  // HARTKODIERTE BEISPIELDATEN FÜR DAS QUIZ
-  // ==========================================
+  // Session anlegen, falls noch keine vorhanden
+  useEffect(() => {
+    async function startSession() {
+      if (sessionId) return; // Session schon vorhanden
+      try {
+        // Hier ggf. userId dynamisch holen!
+        const response = await fetch('http://localhost:5000/api/quizsessions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: 1, quizRoomId }) // userId ggf. ersetzen!
+        });
+        if (!response.ok) throw new Error('Quizsession konnte nicht gestartet werden');
+        const data = await response.json();
+        setSessionId(data.id);
+        // URL aktualisieren, damit sessionId sichtbar ist
+        navigate(`/Quizsession?quizRoomId=${quizRoomId}&sessionId=${data.id}`, { replace: true });
+      } catch (err) {
+        setError('Fehler beim Starten der Quizsession: ' + err.message);
+      }
+    }
+    startSession();
+    // eslint-disable-next-line
+  }, [quizRoomId]);
 
+  // Lade alle Fragen für den QuizRoom
+  useEffect(() => {
+    async function fetchQuestions() {
+      setLoading(true);
+      try {
+        const res = await fetch(`http://localhost:5000/api/questions/room/${quizRoomId}`);
+        if (!res.ok) throw new Error('Fragen konnten nicht geladen werden');
+        const data = await res.json();
+        setQuestions(data);
+        setCurrentIdx(0);
+      } catch (err) {
+        setError('Fehler beim Laden der Fragen: ' + err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    if (quizRoomId) fetchQuestions();
+  }, [quizRoomId]);
 
-  const navigate = useNavigate(); // Hook initialisieren
+  // Lade Optionen der aktuellen Frage
+  useEffect(() => {
+    async function fetchOptions() {
+      if (questions.length === 0) return;
+      const qid = questions[currentIdx]?.id;
+      if (!qid) return;
+      try {
+        const res = await fetch(`http://localhost:5000/api/answeroptions/question/${qid}`);
+        if (!res.ok) throw new Error('Antwortoptionen konnten nicht geladen werden');
+        const data = await res.json();
+        setOptions(data);
+      } catch (err) {
+        setError('Fehler beim Laden der Antwortoptionen: ' + err.message);
+      }
+    }
+    fetchOptions();
+  }, [questions, currentIdx]);
 
-  // Daten für PrimaryContentBox
-  const quizData = {
+  // Lade QuizRoom-Titel
+  useEffect(() => {
+    async function fetchRoom() {
+      if (!quizRoomId) return;
+      try {
+        const res = await fetch(`http://localhost:5000/api/quizrooms/${quizRoomId}`);
+        if (!res.ok) throw new Error('QuizRoom konnte nicht geladen werden');
+        const data = await res.json();
+        setQuizRoomTitle(data.title);
+      } catch (err) {
+        setError('Fehler beim Laden des QuizRooms: ' + err.message);
+      }
+    }
+    fetchRoom();
+  }, [quizRoomId]);
 
+  if (loading || questions.length === 0 || !sessionId) {
+    return <div className="spinner">Lade Quiz...</div>;
+  }
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
 
-    currentQuestion: 3, // Aktuelle Frage
-    totalQuestions: 7,  // Gesamtanzahl der Fragen
-    questionText: "Welcher SQL-Befehl wird verwendet, um neue Datensätze in eine Tabelle einzufügen?",
-    options: [
-      "UPDATE",
-      "INSERT INTO",
-      "ADD RECORD",
-      "CREATE NEW"
-    ]
-  };
+  const currentQuestion = questions[currentIdx];
 
-  // Daten für SecondaryContentBox
-  const quizInfoData = {
-    quizRoom: "Datenbanksysteme & SQL Grundlagen", // Titel hierher verschoben
-    currentQuestionDisplay: `Frage ${quizData.currentQuestion} von ${quizData.totalQuestions}`,
-    totalPoints: "4",
-  };
-
-  // ==========================================
-  // HANDLER-FUNKTIONEN FÜR INTERAKTIONEN
-  // ==========================================
-
+  // Handler
   const handleOptionClick = (selectedOption) => {
     console.log("Ausgewählte Option:", selectedOption);
     alert(`Du hast "${selectedOption}" ausgewählt!`);
@@ -50,7 +117,7 @@ const QuizSession = () => {
 
   const handleNextQuestion = () => {
     console.log("Navigiere zur nächsten Frage...");
-    alert("Gehe zur nächsten Frage!");
+    setCurrentIdx((idx) => idx + 1);
   };
 
   const handleCancelQuiz = () => {
@@ -58,140 +125,33 @@ const QuizSession = () => {
     navigate('/Dashboard'); // Navigiert zur Route /Dashboard;
   };
 
-  // Daten für die Buttons der ButtonGroup
   const buttonsData = [
-    { label: "Abbrechen", type: "secondary", onClick: handleCancelQuiz }, // Handler zugewiesen
-    { label: "Weiter", type: "primary", onClick: handleNextQuestion }    // Handler zugewiesen
+    { label: "Abbrechen", type: "secondary", onClick: handleCancelQuiz },
+    { label: "Weiter", type: "primary", onClick: handleNextQuestion }
   ];
 
-  // ==========================================
-  // RENDERING DER KOMPONENTEN
-  // ==========================================
-
   return (
-    <div> 
-        <NavBar />
-    <div className="quiz-layout-container">
-      {/* PrimaryContentBox (nimmt 2/3 des Layouts ein) */}
-      <PrimaryContentBox
-        mode="quiz" // <-- Hier den Modus definieren
-        questionText={quizData.questionText}
-        options={quizData.options}
-        onOptionClick={handleOptionClick}
-        buttons={buttonsData} // Übergibt die Button-Daten an PrimaryContentBox
-      />
-
-      {/* SecondaryContentBox (nimmt 1/3 des Layouts ein) */}
-      <SecondaryContentBox
-        mode="quiz" // <-- Hier den Modus definieren
-        quizRoom={quizInfoData.quizRoom} // Titel hier übergeben
-        questionNumber={quizInfoData.currentQuestionDisplay}
-        data={{
-            totalPoints: quizInfoData.totalPoints,
-        }}
-      />
-    </div>
+    <div>
+      <NavBar />
+      <div className="quiz-layout-container">
+        <PrimaryContentbox
+          mode="quiz"
+          questionText={currentQuestion.questionText}
+          options={options}
+          onOptionClick={handleOptionClick}
+          buttons={buttonsData}
+        />
+        <SecondaryContentbox
+          mode="quiz"
+          quizRoom={quizRoomTitle}
+          questionNumber={`Frage ${currentIdx + 1} von ${questions.length}`}
+          data={{
+            totalPoints: "4",
+          }}
+        />
+      </div>
     </div>
   );
 }
 
 export default QuizSession;
-
-//     const [index, setIndex] = useState(0);
-//     const [givenAnswer, setGivenAnswer] = useState(null); // Speichert den Index der VOM BENUTZER GEGEBENEN Antwort
-//     const [answered, setAnswered] = useState(false); //wurde die Frage schon beantwortet ?
-//     const [score, setScore] = useState(0); // Punktestand
-
-//     const question = questionlist.length > index ? questionlist[index] : null;
-
-//     if (!question) {
-//               if (index >= questionlist.length && questionlist.length > 0) {
-//             return (
-//                 <div className="container">
-//                     <h2>Quiz beendet!</h2>
-//                     <p>Dein Ergebnis: {score} von {questionlist.length} Punkten</p>
-//                     <button onClick={() => {
-//                         setIndex(0);
-//                         setGivenAnswer(null);
-//                         setAnswered(false);
-//                         setScore(0);
-//                     }}>Neustart</button>
-//                 </div>
-//             );
-//         }
-//         return <div className="container"><h2>Keine Fragen geladen oder Quiz beendet.</h2></div>;
-//     }
-
-//     // ACHTUNG: Hier muss 'optionIndex' (0, 1, 2, 3) übergeben werden, nicht 1, 2, 3, 4
-//     const checkAnswer = (optionIndex) => {
-//         if (answered) {
-//             return;
-//         }
-
-//         setGivenAnswer(optionIndex); // Speichere den Index der gegebenen Antwort
-//         setAnswered(true);
-        
-//          if (optionIndex === correctAnswer) {
-//             setScore(prevScore => prevScore + 1); // Erhöhe den Punktestand bei korrekter Antowrt
-//         }
-
-//     };
-
-//     const nextQuestion = () => {
-//         if (index < questionlist.length - 1) { // Gehe zur nächsten Frage, wenn es noch welche gibt
-//             setIndex(prevIndex => prevIndex + 1);
-//             setGivenAnswer(null); // Setze gegebene Antwort zurück für die nächste Frage
-//             setAnswered(false);   // Setze den "beantwortet"-Status zurück
-//         } else {
-//             setIndex(prevIndex => prevIndex + 1); // Erhöhe den Index, um den "Quiz beendet" Zustand zu erreichen
-//         }
-//     };
-
-//     const correctAnswer = question.correctAnswer;
-
-//     return (
-//         <div className="container">
-//             <h1>iU QuizAcademy</h1>
-//             <hr />
-//             <h2>{index + 1}. {question.question}</h2>
-//             <ul>
-//                 {question.options.map((optionText, optionIndex) => {
-//                     let liClassName = '';
-//                     if (answered) { // Wenn die Frage beantwortet wurde
-//                         // Die vom User GEGEBENE Antwort
-//                         if (optionIndex === givenAnswer) {
-//                             if (optionIndex === correctAnswer) { // Vergleich mit der KORREKTEN Antwort
-//                                 liClassName = 'correct';
-//                             } else {
-//                                 liClassName = 'wrong';
-//                             }
-//                         }
-//                         // Die tatsächliche korrekte Antwort, auch wenn nicht vom Benutzer gewählt
-//                         else if (optionIndex === correctAnswer) {
-//                             liClassName = 'correct';
-//                         }
-//                     } else if (givenAnswer === optionIndex) {
-//                         // Markiere die aktuell ausgewählte Option, bevor die Antwort bewertet wird
-//                         liClassName = 'selected';
-//                     }
-
-//                     return (
-//                         <li
-//                             key={optionIndex}
-//                             onClick={() => checkAnswer(optionIndex)}
-//                             className={liClassName}
-//                         >
-//                             {optionText}
-//                         </li>
-//                     );
-//                 })}
-//             </ul>
-//             <button onClick={nextQuestion}>Weiter</button>
-//             <div className="index">Frage {index + 1} von {questionlist.length}</div>
-//             <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '1.2em', fontWeight: 'bold' }}>
-//                 Aktueller Score: {score}
-//             </div>
-//         </div>
-//     );
-
-
