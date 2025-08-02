@@ -1,18 +1,20 @@
 import React from 'react';
 import './OptionfieldGroup.css';
 
-const OptionfieldGroup = ({ options, onOptionClick, optionColor }) => (
-  <div className={`option-field-group${optionColor ? ' ' + optionColor : ''}`}>
-    {options.map((option, idx) => (
-      <div
-        key={option.id || idx}
-        className={`option-item${optionColor ? ' ' + optionColor : ''}`}
-        onClick={() => onOptionClick(option)}
-      >
-        {option.optionText || option.title}
-      </div>
-    ))}
-  </div>
-);
+function OptionfieldGroup({ options, onOptionClick }) {
+  return (
+    <div className="option-field-group">
+      {options.map((option, idx) => (
+        <div
+          key={option.id || idx}
+          className={`option-item${option.optionColor ? ' ' + option.optionColor : ''}`}
+          onClick={() => typeof onOptionClick === 'function' && onOptionClick(option, idx)}
+        >
+          {option.optionText || option.title || option.name}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default OptionfieldGroup;

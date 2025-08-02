@@ -27,15 +27,26 @@ exports.startSession = async (req, res) => {
   }
 
   try {
+    // Überprüfen, ob bereits eine aktive Session für den Benutzer und den Quizraum existiert
+    const existingSession = await QuizSession.findOne({
+      where: { userId, quizRoomId, state: 'IN_PROGRESS' }
+    });
+    if (existingSession) {
+      return res.status(200).json(existingSession); // Bestehende Session zurückgeben
+    }
+
     // Neue Session mit aktuellem Zeitstempel und Status "IN_PROGRESS" anlegen
-    const session = await QuizSession.create({
+    const now = new Date();
+    const newSession = await QuizSession.create({
       userId,
       quizRoomId,
-      beginTime: new Date(),
-      state: 'IN_PROGRESS'
+      beginTime: now,
+      lastAction: now,         // last_action initial setzen
+      state: 'IN_PROGRESS',
+      currentQuestion: 0       // current_question initial auf 0 setzen
     });
 
-    res.status(201).json(session); // Erfolgreich erstellte Session zurückgeben
+    return res.status(201).json(newSession); // Erfolgreich erstellte Session zurückgeben
   } catch (err) {
     console.error('Fehler beim Starten der Session:', err);
     res.status(500).json({ error: 'Fehler beim Starten der Session' });
@@ -88,5 +99,58 @@ exports.endSession = async (req, res) => {
   } catch (err) {
     console.error('Fehler beim Beenden der Session:', err);
     res.status(500).json({ error: 'Fehler beim Beenden der Session' });
+  }
+};
+
+exports.updateScore = async (req, res) => {
+  const { id } = req.params;
+  const { addScore } = req.body;
+  try {
+    const session = await QuizSession.findByPk(id);
+    if (!session) return res.status(404).json({ error: 'Session nicht gefunden' });
+    session.score += addScore || 0;
+    await session.save();
+    res.json({ score: session.score });
+  } catch (err) {
+    res.status(500).json({ error: 'Fehler beim Aktualisieren des Scores' });
+  }
+};
+
+exports.updateLastAction = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const session = await QuizSession.findByPk(id);
+    if (!session) return res.status(404).json({ error: 'Session nicht gefunden' });
+    session.lastAction = new Date();
+    await session.save();
+    res.json({ lastAction: session.lastAction });
+  } catch (err) {
+    res.status(500).json({ error: 'Fehler beim Aktualisieren von last_action' });
+  }
+};
+
+exports.updateCurrentQuestion = async (req, res) => {
+  const { id } = req.params;
+  const { currentQuestion } = req.body;
+  try {
+    const session = await QuizSession.findByPk(id);
+    if (!session) return res.status(404).json({ error: 'Session nicht gefunden' });
+    session.currentQuestion = currentQuestion;
+    await session.save();
+    res.json({ currentQuestion: session.currentQuestion });
+  } catch (err) {
+    res.status(500).json({ error: 'Fehler beim Aktualisieren von current_question' });
+  }
+};
+
+exports.getUserRoomSessions = async (req, res) => {
+  const { userId, quizRoomId } = req.query;
+  try {
+    const sessions = await QuizSession.findAll({
+      where: { userId, quizRoomId }
+    });
+    res.json(sessions);
+  } catch (err) {
+    res.status(500).json({ error: 'Fehler beim Abrufen der Sessions für User und QuizRoom' });
   }
 };

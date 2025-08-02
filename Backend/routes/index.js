@@ -23,8 +23,10 @@ function registerRoutes(app) {
   app.use('/api/statistics', statisticsRoutes);
   app.use('/api/users/me', userMeRoutes);
   app.use('/api/sessions/last', lastSessionRoutes);
+  app.use('/api/quizsessions', quizSessionRoutes);
   app.use('/api/forum-posts', forumPostRoutes);
   app.use('/api/forum-threads', forumThreadRoutes);
+
 }
 
 module.exports = registerRoutes;

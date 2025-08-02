@@ -1,85 +1,83 @@
-import React, { useState, useContext } from 'react';
-import './SuccessPage.css'; 
+import React, { useEffect, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import PrimaryContentBox from '../assets/components/PrimaryContentbox';
 import SecondaryContentBox from '../assets/components/SecondaryContentbox';
 import ButtonGroup from '../assets/components/ButtonGroup';
-import { Link } from 'react-router-dom';
 import NavBar from '../assets/components/NavBar';
-
-
+import { useHttpClient } from '../assets/hooks/http-hook';
+import './SuccessPage.css';
 
 const SuccessPage = () => {
- // ==========================================
-  // HARTKODIERTE BEISPIELDATEN FÜR DIE ERGEBNISSE
-  // Diese Daten würden dynamisch aus dem Backend kommen
-  // ==========================================
+  const location = useLocation();
+  const sessionId = location.state?.sessionId;
+  const { sendRequest } = useHttpClient();
 
-  // Daten für PrimaryContentBox (Ergebnis-Nachricht)
-  const primaryContentData = {
-    mainMessage: "Geschafft! Quiz beendet...",
-    subMessage: "Sieh dir deinen Score im Vergleich zu anderen an"
-  };
+  const [sessionData, setSessionData] = useState(null);
+  const [bestScore, setBestScore] = useState(null);
+  const [worstScore, setWorstScore] = useState(null);
 
-  //Daten für SecondaryContentBox (Score-Details)
-  const secondaryContentData = {
-    quizRoom: "Datenbanksysteme & SQL Grundlagen", // Titel hierher verschoben
-    currentScore: "8 von 14 Punkten",
-    lastScore: "9",
-    bestScore: "13",
-    worstScore: "4"
-  };
+  useEffect(() => {
+    async function fetchSession() {
+      if (!sessionId) return;
+      // Session-Daten laden
+      const session = await sendRequest(`http://localhost:5000/api/quizsessions/${sessionId}`);
+      setSessionData(session);
 
-   // ==========================================
-  // HANDLER-FUNKTIONEN FÜR DIE BUTTONS DER RESULTSEITE
-  // ==========================================
+      // Best-/Worst-Score für User und QuizRoom laden
+      const scores = await sendRequest(
+        `http://localhost:5000/api/quizsessions?userId=${session.userId}&quizRoomId=${session.quizRoomId}`
+      );
+      const allScores = scores.map(s => s.score);
+      setBestScore(Math.max(...allScores));
+      setWorstScore(Math.min(...allScores));
+    }
+    fetchSession();
+  }, [sessionId, sendRequest]);
 
+  if (!sessionData) return <div className="spinner">Lade Ergebnis...</div>;
+
+  // Werte berechnen
+  const quizRoomName = sessionData.quizRoom?.title || '';
+  const score = sessionData.score;
+  const maxScore = ((sessionData.currentQuestion + 1) * 100);
+  const currentScoreDisplay = `${score} von ${maxScore} Punkten`;
+
+  // Button-Handler
   const handleRestartQuiz = () => {
-    console.log("Quiz neu starten...");
-    alert("Das Quiz wird neu gestartet!");
-    // Hier würde die Logik zum Neustarten des Quiz implementiert
-    // z.B. Navigation zur QuizPage oder Reset des Quiz-States
+    Navigate('/userquizroom')
+    console.log("Zu QuizRoom navigieren...");
   };
-
   const handleGoToDashboard = () => {
+    Navigate('/dashboard');
     console.log("Zum Dashboard navigieren...");
-    alert("Du wirst zum Dashboard weitergeleitet!");
-    // Hier würde die Logik zur Navigation zum Dashboard implementiert
   };
 
-  // Daten für die Buttons der ButtonGroup, direkt in ResultPage definiert
   const buttonsData = [
-    { label: "Neustart", type: "secondary", onClick:handleRestartQuiz  },
+    { label: "Quiz Rooms", type: "secondary", onClick: handleRestartQuiz },
     { label: "Dashboard", type: "primary", onClick: handleGoToDashboard }
   ];
-
-  // ==========================================
-  // RENDERING DER KOMPONENTEN
-  // ==========================================
 
   return (
     <div>
       <NavBar />
-    <div className="quiz-layout-container">
-      {/* PrimaryContentBox (nimmt 2/3 des Layouts ein) */}
-      <PrimaryContentBox
-        mode="result" // <-- Hier den Modus definieren
-        mainMessage={primaryContentData.mainMessage}
-        subMessage={primaryContentData.subMessage}
-        buttons={buttonsData} // Übergibt die Button-Daten an PrimaryContentBox
-      />
-
-      {/* SecondaryContentBox (nimmt 1/3 des Layouts ein) */}
-      <SecondaryContentBox
-        mode="result" // <-- Hier den Modus definieren
-        quizRoom={secondaryContentData.quizRoom}
-        currentScore={secondaryContentData.currentScore}
-        lastScore={secondaryContentData.lastScore}
-        bestScore={secondaryContentData.bestScore}
-        worstScore={secondaryContentData.worstScore}
-      />
-    </div>
+      <div className="quiz-layout-container">
+        <PrimaryContentBox
+          mode="result"
+          mainMessage="Geschafft! Quiz beendet..."
+          subMessage="Sieh dir deinen Score im Vergleich zu anderen an"
+          buttons={buttonsData}
+        />
+        <SecondaryContentBox
+          mode="result"
+          quizRoom={quizRoomName}
+          currentScore={currentScoreDisplay}
+          lastScore={score}
+          bestScore={bestScore}
+          worstScore={worstScore}
+        />
+      </div>
     </div>
   );
-}
+};
 
 export default SuccessPage;

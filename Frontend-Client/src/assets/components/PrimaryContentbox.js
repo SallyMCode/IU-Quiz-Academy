@@ -9,13 +9,14 @@ const PrimaryContentbox = ({ mode, questionNumber, questionText, options, button
 
   // Bedingtes Rendering basierend auf dem 'mode'
   const renderContent = () => {
-    if (mode === 'quiz') {
+    if (mode === 'quiz' || mode === 'publicquiz') {
       return (
         <>
           <p className="question-number-top">{questionNumber}</p>
           <p className="question-text">{questionText}</p>
           <OptionFieldGroup
             options={options}
+            onOptionClick={onOptionClick}
           />
           <ButtonGroup buttons={buttons} />
         </>

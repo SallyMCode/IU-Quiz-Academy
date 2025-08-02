@@ -192,3 +192,6 @@
   box-shadow: 0 0 0 3px #ffe066;
   filter: contrast(1.2);
 }
+
+.secondary-content-box[customborder="green"] { border-left: 4px solid #1a7a1a; }
+.secondary-content-box[customborder="red"] { border-left: 4px solid #d32f2f; }

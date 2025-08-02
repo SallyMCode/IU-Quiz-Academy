@@ -3,33 +3,40 @@ import './SecondaryContentbox.css';
 import checkIcon from '../images/Check_icon.svg.png';
 import ButtonGroup from './ButtonGroup';
 import thinkingIcon from '../images/thinking.png';
+import thumbsUPIcon from '../images/thumbsUP.png';
+import wrongIcon from '../images/Wrong.png';
+
 
 
 // Die SecondaryContentBox empfängt nun eine 'mode' Prop und spezifische Daten
 const SecondaryContentBox = ({
     mode,
-    quizRoom, // Für Quiz-Modus + Result-Modus
-    questionNumber, // Für Quiz-Modus
-    data, // Für Quiz-Modus (enthält totalPoints, timeRemaining, difficulty)
-    currentScore, // Für Result-Modus
-    lastScore, // Für Result-Modus
-    bestScore, // Für Result-Modus
-    worstScore, // Für Result-Modus
-    questionNumberDisplay, // Neu für newQuiz Modus
-    questionText,          // Neu für newQuiz Modus
-    answers,               // Neu für newQuiz Modus
-    correctAnswerIndex,    // Neu für newQuiz Modus
-    buttonsData,           // Neu für newQuiz Modus (für Bearbeiten/Löschen Buttons)
-    children,              // Für emptyList Modus
-    highlight               // Neu: Prop um die Hervorhebung zu steuern
+    quizRoom,
+    questionNumber,
+    data,
+    currentScore,
+    lastScore,
+    bestScore,
+    worstScore,
+    questionNumberDisplay,
+    questionText,
+    answers,
+    correctAnswerIndex,
+    buttonsData,
+    children,
+    highlight,
+    imageType,
+    secondaryBorder,
+    quizRoomTitleColor // <-- NEU
 }) => {
 
     const renderContent = () => {
         if (mode === 'quiz') {
             return (
                 <>
-                    <span style={{ color: '#ffc107' }}>
-                        <h4 className="quiz-room-title">{quizRoom}</h4> </span>
+                    <span style={{ color: quizRoomTitleColor || '#2563EB' }}>
+                        <h4 className="quiz-room-title">{quizRoom}</h4>
+                    </span>
                     <div className="quiz-info-label">
                         {questionNumber}
                     </div>
@@ -39,7 +46,18 @@ const SecondaryContentBox = ({
                         <span className="quiz-info-value">{data.totalPoints}</span>
                     </div>
                     <br />
-                    <img src={thinkingIcon} alt="SmilyThinking" className="image-secondaryContentbox" />
+                    <img
+                        src={
+                            imageType === 'thumbsUP'
+                                ? thumbsUPIcon
+                                : imageType === 'wrong'
+                                ? wrongIcon
+                                : thinkingIcon
+                        }
+                        alt="Feedback"
+                        className="image-secondaryContentbox"
+                    />
+                    {children}
                 </>
             );
         } else if (mode === 'result') {
@@ -52,9 +70,6 @@ const SecondaryContentBox = ({
                     <p className="score-display">Dein Score<br />{currentScore}</p>
 
                     <div>
-                        <div className="score-field">
-                            <strong>Dein letzter Score:</strong>{lastScore}
-                        </div>
                         <div className="score-field">
                             <strong>Bester Score:</strong> {bestScore}
                         </div>
@@ -98,7 +113,10 @@ const SecondaryContentBox = ({
     };
 
     return (
-        <div className={`content-box secondary-content-box${highlight ? ' highlight-edit' : ''}`}>
+        <div
+            className={`content-box secondary-content-box${highlight ? ' highlight-edit' : ''}`}
+            customborder={secondaryBorder} // <-- HIER ATTRIBUT SETZEN
+        >
             {renderContent()}
         </div>
     );

@@ -239,7 +239,6 @@ function NewQuizRoomPage() {
         answerExplanation: ''
       });
 
-      alert('Frage und Antwortoptionen erfolgreich gespeichert!');
     } catch (err) {
       alert('Fehler beim Speichern der Frage: ' + err.message);
     }

@@ -27,12 +27,16 @@ export const useHttpClient = () => {
         );
 
         if (!response.ok) {
-          throw new Error(responseData.message);
+          throw new Error(responseData.message || 'Etwas ist schiefgelaufen!');
         }
 
         setIsLoading(false);
         return responseData;
       } catch (err) {
+        if (err.name === 'AbortError') {
+          setIsLoading(false);
+          return; // Kein Fehler anzeigen!
+        }
         setError(err.message);
         setIsLoading(false);
         throw err;

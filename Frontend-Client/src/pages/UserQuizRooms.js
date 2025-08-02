@@ -5,26 +5,23 @@ import NavBar from '../assets/components/NavBar';
 import Header from '../assets/components/Header';
 import { useNavigate } from 'react-router-dom';
 import './UserQuizRooms.css';
+import { useHttpClient } from '../assets/hooks/http-hook';
 
 function UserQuizRooms() {
   const [userQuizRooms, setUserQuizRooms] = useState([]);
   const [publicQuizRooms, setPublicQuizRooms] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // HTTP-Hook verwenden
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   // Statische User-ID für Demo
   const userId = 1;
 
   useEffect(() => {
     async function fetchQuizRooms() {
-      setLoading(true);
-      setError(null);
       try {
-        const response = await fetch('http://localhost:5000/api/quizrooms');
-        if (!response.ok) throw new Error('QuizRooms konnten nicht geladen werden');
-        const allRooms = await response.json();
-
+        const allRooms = await sendRequest('http://localhost:5000/api/quizrooms');
         // UserQuizRooms: creator.id === userId && public === false
         const myRooms = allRooms.filter(
           room =>
@@ -39,15 +36,12 @@ function UserQuizRooms() {
         setPublicQuizRooms(publicRooms);
 
       } catch (err) {
-        setError(err.message);
         setUserQuizRooms([]);
         setPublicQuizRooms([]);
-      } finally {
-        setLoading(false);
       }
     }
     fetchQuizRooms();
-  }, []);
+  }, [sendRequest]);
 
   return (
     <div>
@@ -60,7 +54,7 @@ function UserQuizRooms() {
             <h1>🧑‍🏫</h1>
             <h2 className="section-title">Meine Quiz Rooms</h2>
           </div>
-          {loading ? (
+          {isLoading ? (
             <div className="spinner">Lade QuizRooms...</div>
           ) : error ? (
             <div className="error-message">{error}</div>
@@ -69,7 +63,14 @@ function UserQuizRooms() {
           ) : (
             <OptionFieldGroup
               options={userQuizRooms}
-              onOptionClick={room => navigate(`/Quizsession?quizRoomId=${room.id}`)}
+              onOptionClick={room =>
+                navigate('/Quizsession', {
+                  state: {
+                    quizRoomId: room.id,
+                    isPublicQuizRoom: room.public === true || room.public === 1 // <-- Wert mitgeben
+                  }
+                })
+              }
             />
           )}
           <div className="add-quizroom-bottom">
@@ -92,7 +93,7 @@ function UserQuizRooms() {
 
         <PrimaryContentbox mode="newQuiz" customBorder="blue">
           <h2 className="section-title blue-title">🔓Öffentliche Quiz Rooms</h2>
-          {loading ? (
+          {isLoading ? (
             <div className="spinner">Lade QuizRooms...</div>
           ) : error ? (
             <div className="error-message">{error}</div>
@@ -100,9 +101,15 @@ function UserQuizRooms() {
             <div className="empty-message">Keine öffentlichen QuizRooms vorhanden.</div>
           ) : (
             <OptionFieldGroup
-              options={publicQuizRooms}
-              onOptionClick={room => navigate(`/Quizsession?quizRoomId=${room.id}`)}
-              optionColor="blue"
+              options={publicQuizRooms.map(room => ({ ...room, optionColor: 'blue' }))}
+              onOptionClick={room =>
+                navigate('/Quizsession', {
+                  state: {
+                    quizRoomId: room.id,
+                    isPublicQuizRoom: true // <-- Wert mitgeben
+                  }
+                })
+              }
             />
           )}
         </PrimaryContentbox>

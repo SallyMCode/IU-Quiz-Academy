@@ -2,51 +2,61 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
 const QuizSession = sequelize.define('QuizSession', {
-id: {
-  type: DataTypes.INTEGER,
-  autoIncrement: true,
-  primaryKey: true,
-},
-
-userId: {
-  type: DataTypes.INTEGER,
-  field: 'user_id',
-},
-
-quizRoomId: {
-  type: DataTypes.INTEGER,
-  field: 'quiz_room_id',
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
   },
 
-beginTime: {
-  type: DataTypes.DATE,
-  field: 'begin_time',
-},
+  userId: {
+    type: DataTypes.INTEGER,
+    field: 'user_id',
+  },
 
-endTime: {
-  type: DataTypes.DATE,
-  field: 'end_time',
-},
+  quizRoomId: {
+    type: DataTypes.INTEGER,
+    field: 'quiz_room_id',
+  },
 
-state: {
-  type: DataTypes.ENUM('CLOSED', 'IN_PROGRESS'),
-  allowNull: false,
-  defaultValue: 'IN_PROGRESS',
-  field: 'state',
-},
+  beginTime: {
+    type: DataTypes.DATE,
+    field: 'begin_time',
+  },
 
-score: {
-  type: DataTypes.INTEGER,
-  defaultValue: 0,
-  field: 'score',
-},
+  endTime: {
+    type: DataTypes.DATE,
+    field: 'end_time',
+  },
+
+  state: {
+    type: DataTypes.ENUM('CLOSED', 'IN_PROGRESS'),
+    allowNull: false,
+    defaultValue: 'IN_PROGRESS',
+    field: 'state',
+  },
+
+  score: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    field: 'score',
+  },
+
+  lastAction: {
+    type: DataTypes.DATE,
+    field: 'last_action',
+  },
+
+  currentQuestion: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    field: 'current_question',
+  },
 
 }, {
-tableName: 'quiz_session',
-timestamps: true,
-createdAt: 'joined_at',
-updatedAt: false,
+  tableName: 'quiz_session',
+  timestamps: true,
+  createdAt: 'joined_at',
+  updatedAt: false,
 });
-
 
 module.exports = QuizSession;

@@ -20,7 +20,7 @@ function App() {
         <Route path="/forum" element={<CommunityPage />} />
         <Route path="/community/thread/:threadId" element={<ThreadPage />} />
         <Route path="/Quizsession" element={<QuizSession />} />
-        <Route path="/Quizsession/SuccesPage" element={<SuccessPage />} />
+        <Route path="/SuccessPage" element={<SuccessPage />} />
         <Route path="/NewQuizroom" element={<NewQuizRoomPage />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/userquizrooms" element={<UserQuizRooms />} />
