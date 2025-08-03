@@ -55,27 +55,13 @@ exports.startSession = async (req, res) => {
 
 // Controller: Einzelne Session per ID abrufen
 exports.getSessionById = async (req, res) => {
-  const { id } = req.params; // Session-ID aus URL
-
-  try {
-    // Session mit zugehörigen User- und QuizRoom-Daten laden
-    const session = await QuizSession.findByPk(id, {
-      include: [
-        { model: User, as: 'user', attributes: ['id', 'username'] },
-        { model: QuizRoom, as: 'quizRoom', attributes: ['id', 'title'] }
-      ]
-    });
-
-    // Falls Session nicht gefunden wird 404 zurückgeben
-    if (!session) {
-      return res.status(404).json({ error: 'Session nicht gefunden' });
-    }
-
-    res.json(session); // Gefundene Session als JSON senden
-  } catch (err) {
-    console.error('Fehler beim Abrufen der Session:', err);
-    res.status(500).json({ error: 'Fehler beim Abrufen der Session' });
-  }
+  const session = await QuizSession.findByPk(req.params.id, {
+    include: [
+      { model: User, as: 'user' },
+      { model: QuizRoom, as: 'quizRoom' }
+    ]
+  });
+  res.json(session);
 };
 
 // Controller: Session beenden

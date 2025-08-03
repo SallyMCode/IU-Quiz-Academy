@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import PrimaryContentBox from '../assets/components/PrimaryContentbox';
 import SecondaryContentBox from '../assets/components/SecondaryContentbox';
-import ButtonGroup from '../assets/components/ButtonGroup';
 import NavBar from '../assets/components/NavBar';
 import { useHttpClient } from '../assets/hooks/http-hook';
 import './SuccessPage.css';
@@ -11,6 +10,7 @@ const SuccessPage = () => {
   const location = useLocation();
   const sessionId = location.state?.sessionId;
   const { sendRequest } = useHttpClient();
+  const navigate = useNavigate();
 
   const [sessionData, setSessionData] = useState(null);
   const [bestScore, setBestScore] = useState(null);
@@ -19,13 +19,18 @@ const SuccessPage = () => {
   useEffect(() => {
     async function fetchSession() {
       if (!sessionId) return;
-      // Session-Daten laden
       const session = await sendRequest(`http://localhost:5000/api/quizsessions/${sessionId}`);
+      if (!session) return; // <--- Prüfung ob die Session existiert
+      console.log("Session-Daten:", session);
       setSessionData(session);
+
+      // Werte für User und QuizRoom
+      const userId = session.userId || session.user?.id;
+      const quizRoomId = session.quizRoomId || session.quizRoom?.id;
 
       // Best-/Worst-Score für User und QuizRoom laden
       const scores = await sendRequest(
-        `http://localhost:5000/api/quizsessions?userId=${session.userId}&quizRoomId=${session.quizRoomId}`
+        `http://localhost:5000/api/quizsessions?userId=${userId}&quizRoomId=${quizRoomId}`
       );
       const allScores = scores.map(s => s.score);
       setBestScore(Math.max(...allScores));
@@ -44,11 +49,11 @@ const SuccessPage = () => {
 
   // Button-Handler
   const handleRestartQuiz = () => {
-    Navigate('/userquizroom')
+    navigate('/userquizrooms');
     console.log("Zu QuizRoom navigieren...");
   };
   const handleGoToDashboard = () => {
-    Navigate('/dashboard');
+    navigate('/dashboard');
     console.log("Zum Dashboard navigieren...");
   };
 

@@ -25,7 +25,7 @@ const handleLogin = async (e) => {
       body: JSON.stringify({ username, password }), // Benutzerdaten in JSON umwandeln
     });
 
-    // Überprüfen, ob die Antwort erfolgreich war (Status 200-299)
+    // Überprüfen, ob de Antwort erfolgreich war (Status 200-299)
     if (!response.ok) {
       // Wenn nicht erfolgreich, Fehlermeldung aus der Antwort auslesen
       const errorData = await response.json();

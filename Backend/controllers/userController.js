@@ -60,6 +60,7 @@ exports.loginUser = async (req, res) => {
     }
 
     // Passwort mit bcrypt vergleichen (eingehendes Klartext-Passwort vs. gespeicherter Hash)
+    const hash = await bcrypt.hash(user.passwordHash, 10); // Hier wird der Hash des gespeicherten Passworts generiert
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
       return res.status(401).json({ error: 'Ungültige Anmeldedaten' });

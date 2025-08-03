@@ -9,4 +9,10 @@ html, body {
   height: 100%;
   overflow-x: hidden;
   font-family: 'Open Sans', sans-serif; /* oder was du wirklich nutzt */
+  background: linear-gradient(135deg, #FFFDE7, #FFF3C4, #FFE082);
+}
+
+#root {
+  min-height: 100vh;
+  width: 100vw;
 }
