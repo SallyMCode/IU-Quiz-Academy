@@ -20,8 +20,8 @@ const [newPostContent, setNewPostContent] = useState('');
 // Status ob gerade ein neuer Post abgesendet wird
 const [posting, setPosting] = useState(false);
 
-// Beispielhafte User-ID (später dynamisch aus Login-Kontext oder Auth holen)
-const userId = 1;
+// UserID Laden
+const userId = localStorage.getItem('userId');
 
 // useEffect lädt Thread-Infos und Posts, wenn sich die Thread-ID ändert
 useEffect(() => {

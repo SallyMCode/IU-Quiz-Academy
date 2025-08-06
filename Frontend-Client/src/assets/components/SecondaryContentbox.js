@@ -31,7 +31,7 @@ const SecondaryContentBox = ({
 }) => {
 
     const renderContent = () => {
-        if (mode === 'quiz') {
+        if (mode === 'quiz' || mode === 'publicquiz') {
             return (
                 <>
                     <span style={{ color: quizRoomTitleColor || '#2563EB' }}>

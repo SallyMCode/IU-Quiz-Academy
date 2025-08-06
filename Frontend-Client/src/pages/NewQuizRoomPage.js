@@ -31,6 +31,8 @@ function NewQuizRoomPage() {
   const [editQuestionIndex, setEditQuestionIndex] = useState(null);
   const [editQuestionId, setEditQuestionId] = useState(null);
 
+  const userId = localStorage.getItem('userId'); // UserID holen
+
   // Request zur QuizRoom-Anlage nach Verlassen des Textfeldes
   const handleQuizRoomBlur = async () => {
     if (quizRoomTitle.trim().length >= 3 && !quizRoomSaved) {
@@ -41,7 +43,7 @@ function NewQuizRoomPage() {
           JSON.stringify({
             title: quizRoomTitle,
             public: false,
-            creatorId: 1
+            creatorId: parseInt(userId, 10) // <-- UserID als CreatorID übergeben
           }),
           { 'Content-Type': 'application/json' }
         );

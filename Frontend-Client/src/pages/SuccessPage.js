@@ -30,7 +30,7 @@ const SuccessPage = () => {
 
       // Best-/Worst-Score für User und QuizRoom laden
       const scores = await sendRequest(
-        `http://localhost:5000/api/quizsessions?userId=${userId}&quizRoomId=${quizRoomId}`
+        `http://localhost:5000/api/quizsessions/userroom?userId=${userId}&quizRoomId=${quizRoomId}`
       );
       const allScores = scores.map(s => s.score);
       setBestScore(Math.max(...allScores));

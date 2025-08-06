@@ -1,0 +1,37 @@
+.tag-status {
+  display: flex;
+  align-items: center;
+  max-width: max-content;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  color: #222;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.tag-status-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Statusfarben */
+.tag-neutral {
+  background-color: #eeeeee;
+}
+
+.tag-negative {
+  background-color: #ffeaea;
+}
+
+.tag-positive {
+  background-color: #eaffea;
+}
+
+.tag-prio-high {
+  background-color: #fae103;
+}
+
+.tag-prio-medium {
+  background-color: #e3f2fd;
+}

@@ -15,8 +15,8 @@ function UserQuizRooms() {
   // HTTP-Hook verwenden
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-  // Statische User-ID für Demo
-  const userId = 1;
+  // UserID laden
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     async function fetchQuizRooms() {
@@ -26,7 +26,7 @@ function UserQuizRooms() {
         const myRooms = allRooms.filter(
           room =>
             room.creator &&
-            room.creator.id === userId &&
+            room.creator.id === parseInt(userId, 10) && 
             (room.public === false || room.public === 0)
         );
         setUserQuizRooms(myRooms);
@@ -67,7 +67,7 @@ function UserQuizRooms() {
                 navigate('/Quizsession', {
                   state: {
                     quizRoomId: room.id,
-                    isPublicQuizRoom: room.public === true || room.public === 1 // <-- Wert mitgeben
+                    userId
                   }
                 })
               }
@@ -106,7 +106,7 @@ function UserQuizRooms() {
                 navigate('/Quizsession', {
                   state: {
                     quizRoomId: room.id,
-                    isPublicQuizRoom: true // <-- Wert mitgeben
+                    userId
                   }
                 })
               }

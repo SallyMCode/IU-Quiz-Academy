@@ -14,7 +14,7 @@ function QuizSession() {
   const params = new URLSearchParams(location.search);
   const sessionIdFromUrl = params.get('sessionId');
   const quizRoomIdFromState = location.state?.quizRoomId;
-  const isPublicQuizRoom = location.state?.isPublicQuizRoom || false;
+  const isPublicQuizRoom = location.state?.isPublicQuizRoom || true;
   const [sessionId, setSessionId] = useState(sessionIdFromUrl || null);
   const [questions, setQuestions] = useState([]);
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -30,6 +30,7 @@ function QuizSession() {
   const [sessionStarted, setSessionStarted] = useState(false);
   const [quizRoomId, setQuizRoomId] = useState(quizRoomIdFromState || null); // State für quizRoomId
   const [score, setScore] = useState(0);
+   const userId = localStorage.getItem('userId');
 
   // Session anlegen, falls noch keine vorhanden
   useEffect(() => {
@@ -39,7 +40,7 @@ function QuizSession() {
           const data = await sendRequest(
             'http://localhost:5000/api/quizsessions',
             'POST',
-            JSON.stringify({ userId: 1, quizRoomId }),
+            JSON.stringify({ userId: parseInt(userId, 10), quizRoomId }),
             { 'Content-Type': 'application/json' }
           );
           setSessionId(data.id);
@@ -212,7 +213,7 @@ function QuizSession() {
       } else {
         handleFinishQuiz();
       }
-    }, 3500); // z.B. 3 Sekunden Feedback anzeigen
+    }, 10000); // z.B. 3 Sekunden Feedback anzeigen
   };
 
   const handleCancelQuiz = () => {

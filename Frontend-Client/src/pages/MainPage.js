@@ -6,27 +6,33 @@ import NavBar from '../assets/components/NavBar';
 import Header from '../assets/components/Header';
 import LearningKPIs from '../assets/components/LearningKPIs';
 import CommunityBox from '../assets/components/CommunityBox';
-
+import Tags from '../assets/components/TAGS';
+//
 function MainPage() {
 const [userName, setUserName] = useState(''); // Benutzername
 const [lastSession, setLastSession] = useState(null); // Letzte Session-Daten
+const userId = localStorage.getItem('userId'); // User-ID aus dem LocalStorage holen
+
 
 useEffect(() => {
+  
+  if (!userId) return;
+
   // Beispiel: Hole Benutzerdaten vom Backend
-  fetch('/api/users/me')
+  fetch(`/api/users/${userId}`)
     .then(res => res.json())
     .then(data => {
-      setUserName(data.username || ''); // Benutzername setzen
+      setUserName(data.username || '');
     })
     .catch(err => {
       console.error('Fehler beim Laden des Benutzers:', err);
     });
 
-  // Hole letzte Quiz-Session
-  fetch('/api/sessions/last') // Beispiel-Endpunkt für letzte Session
+  // Hole letzte Quiz-Session für den User
+  fetch(`/api/sessions/last?userId=${userId}`)
     .then(res => res.json())
     .then(data => {
-      setLastSession(data); // z.B. { date: '2025-06-17', topic: 'Datenbanken & SQL' }
+      setLastSession(data);
     })
     .catch(err => {
       console.error('Fehler beim Laden der letzten Session:', err);
@@ -44,11 +50,13 @@ return (
   <div>
     <NavBar />
     <Header />
-
     <div className="container">
       {/* Begrüßung */}
       <div className="greeting">
-        <h2>Willkommen zurück, {userName || 'Sally'}!</h2>
+        <h1 style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'center' }}>
+          Welcome Back
+          <Tags status="High" text={`#${userName || 'LogedInUser'}`} />
+        </h1>
         <p>
           Schön, dass du wieder dabei bist. Jeder Schritt bringt dich deinem Ziel näher.
           <br />
@@ -69,10 +77,13 @@ return (
       </div>
 
       {/* Statistiken */}
-      <LearningKPIs />
+      <LearningKPIs userId={userId} />
 
       {/* Community-Forum-Box */}
       <CommunityBox />
+
+      {/* Tags-Komponente */}
+      <Tags />
     </div>
   </div>
 );
