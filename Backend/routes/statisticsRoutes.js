@@ -19,10 +19,13 @@ router.get('/', async (req, res) => {
 
     const [successRate] = await sequelize.query(`
       SELECT 
-        ROUND(100.0 * SUM(is_correct) / COUNT(*), 2) AS success_rate
-      FROM answer_in_session
-      JOIN quiz_session ON quiz_session.id = answer_in_session.quiz_session_id
-      WHERE quiz_session.user_id = ? AND quiz_session.state = 'CLOSED'
+        CASE 
+          WHEN SUM(max_score) > 0 
+          THEN ROUND(100.0 * SUM(score) / SUM(max_score), 2)
+          ELSE 0
+        END AS success_rate
+      FROM quiz_session
+      WHERE user_id = ?
     `, { replacements: [userId], type: sequelize.QueryTypes.SELECT });
 
     const [totalPoints] = await sequelize.query(`

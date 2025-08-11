@@ -1,4 +1,4 @@
-const { QuizSession, User, QuizRoom } = require('../models');
+const { QuizSession, User, QuizRoom, Question } = require('../models');
 
 // Controller: Alle Quiz-Sessions abrufen
 // Inklusive zugehöriger User- und QuizRoom-Daten (nur ID und Name/Titel)
@@ -19,7 +19,7 @@ exports.getAllSessions = async (req, res) => {
 
 // Controller: Neue Quiz-Session starten
 exports.startSession = async (req, res) => {
-  const { userId, quizRoomId } = req.body;
+  const { userId, quizRoomId, public: isPublic } = req.body;
 
   // Validierung: userId und quizRoomId müssen vorhanden sein
   if (!userId || !quizRoomId) {
@@ -35,6 +35,10 @@ exports.startSession = async (req, res) => {
       return res.status(200).json(existingSession); // Bestehende Session zurückgeben
     }
 
+    // Anzahl der Fragen im QuizRoom ermitteln
+    const questionCount = await Question.count({ where: { quizRoomId } });
+    const maxScore = questionCount * 100;
+
     // Neue Session mit aktuellem Zeitstempel und Status "IN_PROGRESS" anlegen
     const now = new Date();
     const newSession = await QuizSession.create({
@@ -43,7 +47,9 @@ exports.startSession = async (req, res) => {
       beginTime: now,
       lastAction: now,         // last_action initial setzen
       state: 'IN_PROGRESS',
-      currentQuestion: 0       // current_question initial auf 0 setzen
+      currentQuestion: 0,       // current_question initial auf 0 setzen
+      public: isPublic,      // Public Quiz-Session/Room 
+      maxScore: maxScore      
     });
 
     return res.status(201).json(newSession); // Erfolgreich erstellte Session zurückgeben
@@ -132,8 +138,14 @@ exports.updateCurrentQuestion = async (req, res) => {
 exports.getUserRoomSessions = async (req, res) => {
   const { userId, quizRoomId } = req.query;
   try {
+    const where = {};
+    if (quizRoomId) where.quizRoomId = quizRoomId;
+    if (userId) where.userId = userId;
     const sessions = await QuizSession.findAll({
-      where: { userId, quizRoomId }
+      where,
+      include: [
+        { model: User, as: 'user', attributes: ['id', 'username'] }
+      ]
     });
     res.json(sessions);
   } catch (err) {

@@ -24,6 +24,29 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Deutlicherer Schatten beim Hover */
 }
 
-.option-item.blue { background-color: #2563EB; color: #fff; }
-.option-item.green { background-color: #1a7a1a; color: #fff; }
-.option-item.red { background-color: #d32f2f; color: #fff; }
+.option-item.blue { 
+    background-color: #2563EB; 
+    color: #fff; }
+
+.option-item.yellow {
+  background: #ffc107;
+  color: #fff;
+}
+
+.option-item.selected {
+  background-color: #444 !important; /* Dunkelgrau */
+  color: #fff !important;
+}
+.option-item.correct {
+  background-color: #1a7a1a !important; /* Grün */
+  color: #fff !important;
+}
+.option-item.wrong {
+  background-color: #d32f2f !important; /* Rot */
+  color: #fff !important;
+}
+.option-item.disabled {
+  cursor: default !important;
+  pointer-events: none !important;
+  opacity: 0.6; /* Optional: Minderung der Sichtbarkeit */
+}

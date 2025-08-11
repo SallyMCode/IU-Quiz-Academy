@@ -102,9 +102,9 @@
 
 /* Styling für Check_SVG auf SuccessPage */
 .secondary-content-box .image-secondaryContentbox {
-    width: 100px; /* Größe des Icons anpassen*/
-    height: 100px; /**/
-    margin-bottom: 25px; /* Abstand nach unten zum Titel*/
+    width: 150px; /* Größe des Icons anpassen*/
+    height: 150px; /**/
+    margin-bottom: 0px; /* Abstand nach unten zum Titel*/
     /* animation: fadeInScale 0.5s ease-out; */ /* Optionale Animation*/
 }
 
@@ -192,6 +192,5 @@
   box-shadow: 0 0 0 3px #ffe066;
   filter: contrast(1.2);
 }
-
-.secondary-content-box[customborder="green"] { border-left: 4px solid #1a7a1a; }
-.secondary-content-box[customborder="red"] { border-left: 4px solid #d32f2f; }
+.secondary-content-box[customborder="blue"] { border-left: 4px solid #2563EB; }
+.secondary-content-box[customborder="yellow"] { border-left: 4px solid #ffc107; }

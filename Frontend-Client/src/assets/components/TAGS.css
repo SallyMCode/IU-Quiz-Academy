@@ -17,21 +17,31 @@
 
 /* Statusfarben */
 .tag-neutral {
-  background-color: #eeeeee;
+  background-color: #2563EB;
 }
 
 .tag-negative {
-  background-color: #ffeaea;
+  background-color: #d32f2f;
 }
 
 .tag-positive {
-  background-color: #eaffea;
+  background-color: #24ac24;
 }
 
 .tag-prio-high {
-  background-color: #fae103;
+  background-color: #ffc107;
 }
 
 .tag-prio-medium {
   background-color: #e3f2fd;
+}
+
+.tag-status,
+.tag-status-text {
+  white-space: pre-line !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  max-width: 100%;
+  display: block;
+  text-align: left;
 }
