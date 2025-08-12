@@ -38,7 +38,8 @@ const handleLogin = async (e) => {
 
     // Token und Username lokal speichern (z.B. für weitere API-Anfragen)
     localStorage.setItem('token', data.token);
-    localStorage.setItem('username', data.username);
+    localStorage.setItem('username', data.user.username); // <--- user.username!
+    localStorage.setItem('userId', data.user.id);         // <--- user.id speichern
 
     // Nach erfolgreichem Login zur MainPage / Dashboard weiterleiten
     navigate('/dashboard');

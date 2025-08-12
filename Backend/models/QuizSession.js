@@ -52,6 +52,17 @@ const QuizSession = sequelize.define('QuizSession', {
     field: 'current_question',
   },
 
+  public: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    field: 'public',
+  },
+
+  maxScore: {
+    type: DataTypes.INTEGER,
+    field: 'max_score',
+  },
+
 }, {
   tableName: 'quiz_session',
   timestamps: true,

@@ -125,3 +125,17 @@
     text-align: center;
     width: 100%;
 }
+
+.primary-content-box.border-blue {
+    border-left: 4px solid #2563EB !important;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+}
+
+.primary-content-box.border-yellow {
+    border-left: 4px solid #ffc107 !important;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+}

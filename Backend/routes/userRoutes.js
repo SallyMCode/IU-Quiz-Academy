@@ -61,5 +61,13 @@ router.delete(
 userController.deleteUser
 );
 
+// Einzelnen User abrufen (öffentliche Route, daher ohne Token-Authentifizierung)
+router.get(
+  '/:id',
+  param('id').isInt().withMessage('ID muss eine Zahl sein.'),
+  validate,
+  userController.getUserById
+);
+
 module.exports = router;
 

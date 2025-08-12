@@ -6,32 +6,30 @@ import Header from '../assets/components/Header';
 import { useNavigate } from 'react-router-dom';
 import './UserQuizRooms.css';
 import { useHttpClient } from '../assets/hooks/http-hook';
+import TAGS from '../assets/components/TAGS';
+import axios from 'axios';
 
 function UserQuizRooms() {
   const [userQuizRooms, setUserQuizRooms] = useState([]);
   const [publicQuizRooms, setPublicQuizRooms] = useState([]);
+  const [sessionsByRoom, setSessionsByRoom] = useState({});
   const navigate = useNavigate();
 
-  // HTTP-Hook verwenden
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
-
-  // Statische User-ID für Demo
-  const userId = 1;
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     async function fetchQuizRooms() {
       try {
         const allRooms = await sendRequest('http://localhost:5000/api/quizrooms');
-        // UserQuizRooms: creator.id === userId && public === false
         const myRooms = allRooms.filter(
           room =>
             room.creator &&
-            room.creator.id === userId &&
+            room.creator.id === parseInt(userId, 10) && 
             (room.public === false || room.public === 0)
         );
         setUserQuizRooms(myRooms);
 
-        // PublicQuizRooms: public === true
         const publicRooms = allRooms.filter(room => room.public === true || room.public === 1);
         setPublicQuizRooms(publicRooms);
 
@@ -41,7 +39,33 @@ function UserQuizRooms() {
       }
     }
     fetchQuizRooms();
-  }, [sendRequest]);
+  }, [sendRequest, userId]);
+
+  // Lade für jeden PublicQuizRoom die Sessions der letzten 24h
+  useEffect(() => {
+    if (!publicQuizRooms.length) return;
+    const now = new Date();
+    const fetchAllSessions = async () => {
+      const sessionsObj = {};
+      await Promise.all(
+        publicQuizRooms.map(async (room) => {
+          try {
+            const res = await axios.get(`/api/quizsessions/userroom?quizRoomId=${room.id}`);
+            // Filter auf die letzten 24h
+            const filtered = res.data.filter(session => {
+              const lastAction = new Date(session.lastAction);
+              return (now - lastAction) <= 24 * 60 * 60 * 1000;
+            });
+            sessionsObj[room.id] = filtered;
+          } catch {
+            sessionsObj[room.id] = [];
+          }
+        })
+      );
+      setSessionsByRoom(sessionsObj);
+    };
+    fetchAllSessions();
+  }, [publicQuizRooms]);
 
   return (
     <div>
@@ -67,7 +91,8 @@ function UserQuizRooms() {
                 navigate('/Quizsession', {
                   state: {
                     quizRoomId: room.id,
-                    isPublicQuizRoom: room.public === true || room.public === 1 // <-- Wert mitgeben
+                    userId,
+                    isPublicQuizRoom: room.public === true || room.public === 1 
                   }
                 })
               }
@@ -100,17 +125,59 @@ function UserQuizRooms() {
           ) : publicQuizRooms.length === 0 ? (
             <div className="empty-message">Keine öffentlichen QuizRooms vorhanden.</div>
           ) : (
-            <OptionFieldGroup
-              options={publicQuizRooms.map(room => ({ ...room, optionColor: 'blue' }))}
-              onOptionClick={room =>
-                navigate('/Quizsession', {
-                  state: {
-                    quizRoomId: room.id,
-                    isPublicQuizRoom: true // <-- Wert mitgeben
-                  }
-                })
-              }
-            />
+            <>
+              <OptionFieldGroup
+                options={publicQuizRooms.map(room => ({ ...room, optionColor: 'blue' }))}
+                onOptionClick={room =>
+                  navigate('/Quizsession', {
+                    state: {
+                      quizRoomId: room.id,
+                      userId,
+                      isPublicQuizRoom: true
+                    }
+                  })
+                }
+              />
+              <div style={{ marginTop: 32 }}>
+                <h3 style={{ marginBottom: 4 }}>Letzte Quiz Sessions</h3>
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 8 }}>
+                  <thead>
+                    <tr>
+                      <th style={{ textAlign: 'center', padding: 6 }}>Username</th>
+                      <th style={{ textAlign: 'center', padding: 6 }}>QuizRoom</th>
+                      <th style={{ textAlign: 'center', padding: 6 }}>Status</th>
+                      <th style={{ textAlign: 'center', padding: 6 }}>Score</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {publicQuizRooms.every(room => (sessionsByRoom[room.id] || []).length === 0) ? (
+                      <tr>
+                        <td colSpan={4} style={{ padding: 6, color: '#888' }}>Keine Aktivität in den letzten 24h.</td>
+                      </tr>
+                    ) : (
+                      publicQuizRooms.flatMap(room =>
+                        (sessionsByRoom[room.id] || []).map(session => (
+                          <tr key={session.id + '-' + room.id}>
+                            <td style={{ padding: 6 }}>
+                              <TAGS status="Neutral" text={'#' + (session.user?.username || 'Unbekannt')} />
+                            </td>
+                            <td style={{ padding: 6 }}>{room.title}</td>
+                            <td style={{ padding: 6 }}>
+                              {session.state === 'CLOSED'
+                                ? 'Abgeschlossen'
+                                : session.state === 'IN_PROGRESS'
+                                ? 'Am Quizzen'
+                                : session.state}
+                            </td>
+                            <td style={{ padding: 6 }}>{session.score}</td>
+                          </tr>
+                        ))
+                      )
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
         </PrimaryContentbox>
       </div>

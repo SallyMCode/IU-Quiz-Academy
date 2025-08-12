@@ -108,3 +108,19 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ error: 'Fehler beim Löschen des Nutzers' });
   }
 };
+
+// Nutzer anhand ID abrufen
+exports.getUserById = async (req, res) => {
+  const userId = parseInt(req.params.id, 10);
+  try {
+    const user = await User.findByPk(userId, {
+      attributes: ['id', 'username', 'admin'],
+    });
+    if (!user) {
+      return res.status(404).json({ error: 'Nutzer nicht gefunden' });
+    }
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Fehler beim Abrufen des Nutzers' });
+  }
+};

@@ -5,8 +5,7 @@ import ButtonGroup from './ButtonGroup';
 import thinkingIcon from '../images/thinking.png';
 import thumbsUPIcon from '../images/thumbsUP.png';
 import wrongIcon from '../images/Wrong.png';
-
-
+import TAGS from './TAGS';
 
 // Die SecondaryContentBox empfängt nun eine 'mode' Prop und spezifische Daten
 const SecondaryContentBox = ({
@@ -26,24 +25,27 @@ const SecondaryContentBox = ({
     children,
     highlight,
     imageType,
-    secondaryBorder,
-    quizRoomTitleColor // <-- NEU
+    // secondaryBorder, // <-- Entfernt, wird intern gesetzt
+    // quizRoomTitleColor // <-- Entfernt, wird intern gesetzt
 }) => {
 
+    // Setze Farben und Border abhängig vom Mode (analog PrimaryContentbox)
+    const quizRoomTitleColor = mode === 'publicquiz' ? '#2563EB' : '#ffc107';
+    const customBorder = mode === 'publicquiz' ? 'blue' : mode === 'quiz' ? 'yellow' : undefined;
+
     const renderContent = () => {
-        if (mode === 'quiz') {
+        if (['quiz', 'publicquiz'].includes(mode)) {
             return (
                 <>
-                    <span style={{ color: quizRoomTitleColor || '#2563EB' }}>
-                        <h4 className="quiz-room-title">{quizRoom}</h4>
-                    </span>
+                    <h4 className="quiz-room-title" style={{ color: quizRoomTitleColor }}>
+                        {quizRoom}
+                    </h4>
                     <div className="quiz-info-label">
                         {questionNumber}
                     </div>
                     <br />
-                    <div className="quiz-info-item">
-                        <span className="quiz-info-label">Aktuelle Punkte: </span>
-                        <span className="quiz-info-value">{data.totalPoints}</span>
+                    <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <TAGS status="High" text={`${data.totalPoints} Punkte`} />
                     </div>
                     <br />
                     <img
@@ -57,18 +59,31 @@ const SecondaryContentBox = ({
                         alt="Feedback"
                         className="image-secondaryContentbox"
                     />
-                    {children}
+                    {/* Reasontext soll immer angezeigt werden, wenn children vorhanden */}
+                    {children && (
+                        <div
+                            style={{
+                                marginTop: 24,
+                                textAlign: 'left',
+                                wordBreak: 'break-word',
+                                whiteSpace: 'pre-line',
+                                overflowWrap: 'anywhere',
+                                width: '100%',
+                                maxWidth: '100%',
+                            }}
+                        >
+                            {children}
+                        </div>
+                    )}
                 </>
             );
         } else if (mode === 'result') {
             return (
                 <>
-
                     <span style={{ color: '#ffc107' }}>
-                        <h3 className="quiz-room-title">{quizRoom}</h3> </span>
-
+                        <h3 className="quiz-room-title">{quizRoom}</h3>
+                    </span>
                     <p className="score-display">Dein Score<br />{currentScore}</p>
-
                     <div>
                         <div className="score-field">
                             <strong>Bester Score:</strong> {bestScore}
@@ -80,7 +95,7 @@ const SecondaryContentBox = ({
                     <img src={checkIcon} alt="CheckSymbol" className="image-secondaryContentbox" />
                 </>
             );
-        } else if (mode === 'newQuiz') { // <-- NEUER MODUS FÜR FRAGENDETAILS
+        } else if (mode === 'newQuiz') {
             return (
                 <>
                     <p className="question-number-display" style={{ color: '#ffc107', fontWeight: 'bold' }}>
@@ -100,14 +115,12 @@ const SecondaryContentBox = ({
                     <ButtonGroup buttons={buttonsData} />
                 </>
             );
-        } else if (mode === 'emptyList') { // <-- NEUER MODUS FÜR LEERE LISTE
+        } else if (mode === 'emptyList') {
             return (
                 <>
-                    {children} {/* Zeigt den "Noch keine Fragen hinzugefügt"-Text */}
+                    {children}
                 </>
             );
-
-
         }
         return <p>Kein gültiger Anzeigemodus für SecondaryContentBox.</p>;
     };
@@ -115,7 +128,7 @@ const SecondaryContentBox = ({
     return (
         <div
             className={`content-box secondary-content-box${highlight ? ' highlight-edit' : ''}`}
-            customborder={secondaryBorder} // <-- HIER ATTRIBUT SETZEN
+            customborder={customBorder}
         >
             {renderContent()}
         </div>

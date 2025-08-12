@@ -7,6 +7,7 @@ import ButtonGroup from '../assets/components/ButtonGroup';
 import NavBar from '../assets/components/NavBar';
 import OptionfieldGroup from '../assets/components/OptionfieldGroup';
 import { useHttpClient } from '../assets/hooks/http-hook';
+import TAGS from '../assets/components/TAGS';
 
 function QuizSession() {
   const location = useLocation();
@@ -14,7 +15,8 @@ function QuizSession() {
   const params = new URLSearchParams(location.search);
   const sessionIdFromUrl = params.get('sessionId');
   const quizRoomIdFromState = location.state?.quizRoomId;
-  const isPublicQuizRoom = location.state?.isPublicQuizRoom || false;
+  // Public-QuizRoom-Status als Boolean
+  const isPublicQuizRoom = location.state?.isPublicQuizRoom === true;
   const [sessionId, setSessionId] = useState(sessionIdFromUrl || null);
   const [questions, setQuestions] = useState([]);
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -30,21 +32,30 @@ function QuizSession() {
   const [sessionStarted, setSessionStarted] = useState(false);
   const [quizRoomId, setQuizRoomId] = useState(quizRoomIdFromState || null); // State für quizRoomId
   const [score, setScore] = useState(0);
+  const [mode, setMode] = useState('quiz'); // Standardwert
+  const userId = localStorage.getItem('userId');
 
   // Session anlegen, falls noch keine vorhanden
   useEffect(() => {
     async function fetchOrCreateSession() {
       if (!sessionId && quizRoomId) {
         try {
+          // Lade Fragen, um maxScore zu berechnen
+          const questionsData = await sendRequest(`http://localhost:5000/api/questions/room/${quizRoomId}`);
+          const maxScore = Array.isArray(questionsData) ? questionsData.length * 100 : 0;
+
           const data = await sendRequest(
             'http://localhost:5000/api/quizsessions',
             'POST',
-            JSON.stringify({ userId: 1, quizRoomId }),
+            JSON.stringify({
+              userId: parseInt(userId, 10),
+              quizRoomId,
+              public: isPublicQuizRoom,
+            }),
             { 'Content-Type': 'application/json' }
           );
           setSessionId(data.id);
           setScore(data.score); // Score aus Session übernehmen
-          navigate(`/Quizsession?sessionId=${data.id}`);
         } catch (err) {}
       } else if (sessionId) {
         // Session laden, falls vorhanden
@@ -54,11 +65,12 @@ function QuizSession() {
           );
           setScore(data.score);
           setQuizRoomId(data.quizRoomId);
+          setMode(data.public ? 'publicquiz' : 'quiz'); // Modus aus DB setzen
         } catch (err) {}
       }
     }
     fetchOrCreateSession();
-  }, [sessionId, quizRoomId, sendRequest, navigate]);
+  }, [sessionId, quizRoomId, sendRequest, navigate, isPublicQuizRoom, userId]);
 
   // Lade alle Fragen für den QuizRoom
   useEffect(() => {
@@ -66,13 +78,16 @@ function QuizSession() {
       try {
         const data = await sendRequest(`http://localhost:5000/api/questions/room/${quizRoomId}`);
         setQuestions(Array.isArray(data) ? data : []);
-        setCurrentIdx(0);
+        // Nur auf 0 setzen, wenn NICHT Resume
+        if (!(location.state?.resume && location.state.currentQuestion !== undefined)) {
+          setCurrentIdx(0);
+        }
       } catch (err) {
         setQuestions([]);
       }
     }
     if (quizRoomId) fetchQuestions();
-  }, [quizRoomId, sendRequest]);
+  }, [quizRoomId, sendRequest, location.state]);
 
   // Lade Optionen der aktuellen Frage
   useEffect(() => {
@@ -135,11 +150,22 @@ function QuizSession() {
       if (!sessionId) return;
       try {
         const sessionData = await sendRequest(`http://localhost:5000/api/quizsessions/${sessionId}`);
-        setQuizRoomId(sessionData.quizRoomId); // Füge einen State für quizRoomId hinzu
+        setQuizRoomId(sessionData.quizRoomId);
+        setMode(sessionData.public ? 'publicquiz' : 'quiz'); // Modus aus DB setzen
       } catch (err) {}
     }
     fetchSession();
   }, [sessionId, sendRequest]);
+
+  // ...nach dem Laden der Session:
+  useEffect(() => {
+    if (location.state?.resume && location.state.currentQuestion !== undefined) {
+      setCurrentIdx(location.state.currentQuestion);
+    }
+    if (location.state?.resume && location.state.score !== undefined) {
+      setScore(location.state.score);
+    }
+  }, [location.state]);
 
   if (isLoading || questions.length === 0 || !sessionId) {
     return <div className="spinner">Lade Quiz...</div>;
@@ -153,17 +179,33 @@ function QuizSession() {
 
   // Handler für Antwortauswahl
   const handleOptionClick = (option, idx) => {
-    if (questionStatus === 'ANSWERED') return; // Keine Auswahl nach Auswertung
-    setSelectedAnswer(idx); // Auswahl speichern
+    // Keine Auswahl nach Auswertung oder nach Abschluss
+    if (questionStatus === 'ANSWERED' || questionStatus === 'FINISHED') return;
+    setSelectedAnswer(idx);
     setErrorMsg('');
     setShowFeedback(false);
     setFeedbackType(null);
-    setQuestionStatus('SELECTED'); // Status: Option ausgewählt, aber noch nicht ausgewertet
+    setQuestionStatus('SELECTED');
   };
 
   // Handler für Weiter-Button
   const handleNextQuestion = async () => {
-    if (questionStatus !== 'SELECTED') return; // Weiter nur nach Auswahl möglich
+    // Nur im Status 'SELECTED' oder 'Finished' darf weitergeklickt werden
+    if (questionStatus !== 'SELECTED' && questionStatus !== 'Finished') return;
+
+    // Wenn Status 'Finished', direkt zur nächsten Frage
+    if (questionStatus === 'Finished') {
+      if (currentIdx < questions.length - 1) {
+        setCurrentIdx(prev => prev + 1);
+        setQuestionStatus('OPEN');
+        setShowFeedback(false);
+        setSelectedAnswer(null);
+      } else {
+        handleFinishQuiz();
+      }
+      return;
+    }
+
     // Auswertung durchführen
     const isCorrect = selectedAnswer === correctAnswerIndex;
     setQuestionStatus('ANSWERED');
@@ -202,17 +244,11 @@ function QuizSession() {
         );
       } catch (err) {}
     }
-    // Nach kurzer Zeit zur nächsten Frage wechseln
+
+    // Nach 2 Sekunden Status auf 'Finished' setzen, damit der Nutzer weiterklicken kann
     setTimeout(() => {
-      if (currentIdx < questions.length - 1) {
-        setCurrentIdx(prev => prev + 1);
-        setQuestionStatus('OPEN');
-        setShowFeedback(false);
-        setSelectedAnswer(null);
-      } else {
-        handleFinishQuiz();
-      }
-    }, 3500); // z.B. 3 Sekunden Feedback anzeigen
+      setQuestionStatus('Finished');
+    }, 2000);
   };
 
   const handleCancelQuiz = () => {
@@ -232,100 +268,108 @@ function QuizSession() {
     }
   };
 
-  // OptionFieldGroup: Option-Farben dynamisch setzen
-  const getOptionColor = idx => {
-    if (showFeedback) {
-      if (feedbackType === 'correct') {
-        if (idx === selectedAnswer) return 'green'; // Richtig beantwortet
-        return null;
-      } else if (feedbackType === 'wrong') {
-        if (idx === selectedAnswer) return 'red'; // Falsch beantwortet
-        if (idx === correctAnswerIndex) return 'green'; // Richtige Antwort hervorheben
-        return null;
+  // Farben
+  const quizRoomTitleColor = isPublicQuizRoom ? '#2563EB' : '#ffc107'; // Blau oder Gelb
+  const customBorder = isPublicQuizRoom ? "blue" : "yellow";
+  const secondaryBorder = isPublicQuizRoom ? "blue" : "yellow";
+
+  // OptionFieldGroup: Option-Farbe
+  function getOptionColor(idx) {
+    if (questionStatus === 'SELECTED') {
+      return selectedAnswer === idx ? 'selected' : (mode === 'publicquiz' ? 'blue' : 'yellow');
+    }
+    if (questionStatus === 'ANSWERED' || questionStatus === 'FINISHED') {
+      if (selectedAnswer === correctAnswerIndex) {
+        return idx === correctAnswerIndex ? 'correct' : (mode === 'publicquiz' ? 'blue' : 'yellow');
+      } else {
+        if (idx === selectedAnswer) return 'wrong';
+        if (idx === correctAnswerIndex) return 'correct';
+        return mode === 'publicquiz' ? 'blue' : 'yellow';
       }
-    } else {
-      if (selectedAnswer === idx) return 'blue'; // Ausgewählt
-      return null; // Standard (gelb)
     }
-  };
+    return mode === 'publicquiz' ? 'blue' : 'yellow';
+  }
 
-  // Buttons für die PrimaryContentbox
-  const buttonsData = [
-    { label: "Abbrechen", type: "secondary", onClick: handleCancelQuiz },
-    {
-      label: "Weiter",
-      type: "primary",
-      onClick: handleNextQuestion,
-      disabled: questionStatus !== 'SELECTED' // Weiter nur aktiv, wenn Option ausgewählt
-    }
-  ];
-
-  // OptionFieldGroup für PrimaryContentbox
-  const optionFieldGroup = (
-    <OptionfieldGroup
-      options={options.map((opt, idx) => ({
-        ...opt,
-        optionColor: isPublicQuizRoom ? 'blue' : getOptionColor(idx)
-      }))}
-      onOptionClick={(option, idx) => {
-        if (!showFeedback) handleOptionClick(option, idx);
-      }}
-    />
-  );
-
-  // SecondaryContentbox: Randfarbe, Bild und Reasontext dynamisch setzen
-  let secondaryBorder = '';
+  // SecondaryContentbox: Bild und Reasontext dynamisch setzen
   let secondaryImage = 'thinking';
   let reasonColor = '';
-  let quizRoomTitleColor = isPublicQuizRoom ? '#2563EB' : '#ffc107'; // Blau oder Gelb
 
   if (showFeedback) {
     if (feedbackType === 'correct') {
-      secondaryBorder = isPublicQuizRoom ? 'blue' : '#1a7a1a';
       secondaryImage = 'thumbsUP';
-      reasonColor = isPublicQuizRoom ? '#2563EB' : '#1a7a1a';
+      reasonColor = '#24ac24';
     } else if (feedbackType === 'wrong') {
-      secondaryBorder = isPublicQuizRoom ? 'blue' : '#d32f2f';
       secondaryImage = 'wrong';
-      reasonColor = isPublicQuizRoom ? '#2563EB' : '#d32f2f';
+      reasonColor = '#d32f2f';
     }
   } else {
-    secondaryBorder = isPublicQuizRoom ? 'blue' : '';
-    reasonColor = isPublicQuizRoom ? '#2563EB' : '';
+    reasonColor = '#000'; // Standardfarbe für Reasontext
   }
 
   // Reasontext für SecondaryContentbox
   const reasonSection = showFeedback && answerExplanation ? (
-    <div style={{ marginTop: 24 }}>
-      <h4 style={{ color: reasonColor, marginBottom: 8 }}>Begründung</h4>
-      <div style={{ color: reasonColor, fontWeight: 500 }}>{answerExplanation}</div>
-    </div>
+    feedbackType === 'wrong' ? (
+      <div style={{ marginTop: 24, textAlign: 'left' }}>
+        <TAGS
+          status="Negative"
+          text={<><strong>Begründung:</strong> {answerExplanation}</>}
+        />
+      </div>
+    ) : feedbackType === 'correct' ? (
+      <div style={{ marginTop: 24, textAlign: 'left' }}>
+        <TAGS status="Positive" 
+        text={<><strong>Begründung:</strong> {answerExplanation}</>} />
+      </div>
+    ) : (
+      <div style={{ marginTop: 24 }}>
+        <h4 style={{ color: reasonColor, marginBottom: 8 }}>Begründung</h4>
+        <div style={{ color: reasonColor, fontWeight: 500 }}>{answerExplanation}</div>
+      </div>
+    )
   ) : null;
+
+  const buttonsData = [
+    {
+      label: 'Abbrechen',
+      onClick: handleCancelQuiz,
+      type: 'secondary',
+      variant: 'outlined',
+      size: 'large',
+      style: { minWidth: 120 }
+    },
+    {
+      label: 'Weiter',
+      onClick: handleNextQuestion,
+      type: 'primary',
+      variant: 'contained',
+      size: 'large',
+      style: { minWidth: 120 }
+    }
+  ];
 
   return (
     <div>
       <NavBar />
       <div className="quiz-layout-container">
         <PrimaryContentbox
-          mode={isPublicQuizRoom ? "publicquiz" : "quiz"}
-          questionNumber={`Frage ${currentIdx + 1} von ${questions.length}`}
+          mode={mode}
           questionText={currentQuestion.questionText}
           options={options.map((opt, idx) => ({
             ...opt,
-            optionColor: isPublicQuizRoom ? 'blue' : getOptionColor(idx)
+            optionColor: getOptionColor(idx)
           }))}
           onOptionClick={handleOptionClick}
           buttons={buttonsData}
-          customBorder={isPublicQuizRoom ? "blue" : secondaryBorder}
+          customBorder={mode === 'publicquiz' ? "blue" : "yellow"}
         />
         <SecondaryContentbox
-          mode={isPublicQuizRoom ? "publicquiz" : "quiz"}
+          mode={mode}
           quizRoom={quizRoomTitle}
           questionNumber={`Frage ${currentIdx + 1} von ${questions.length}`}
           data={{ totalPoints: score }}
-          customBorder={isPublicQuizRoom ? "blue" : secondaryBorder}
+          customBorder={mode === 'publicquiz' ? "blue" : "yellow"}
           imageType={secondaryImage}
-          quizRoomTitleColor={quizRoomTitleColor}
+          quizRoomTitleColor={mode === 'publicquiz' ? '#2563EB' : '#ffc107'}
         >
           {reasonSection}
         </SecondaryContentbox>

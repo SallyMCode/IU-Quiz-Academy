@@ -1,0 +1,47 @@
+.tag-status {
+  display: flex;
+  align-items: center;
+  max-width: max-content;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  color: #222;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.tag-status-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Statusfarben */
+.tag-neutral {
+  background-color: #2563EB;
+}
+
+.tag-negative {
+  background-color: #d32f2f;
+}
+
+.tag-positive {
+  background-color: #24ac24;
+}
+
+.tag-prio-high {
+  background-color: #ffc107;
+}
+
+.tag-prio-medium {
+  background-color: #e3f2fd;
+}
+
+.tag-status,
+.tag-status-text {
+  white-space: pre-line !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  max-width: 100%;
+  display: block;
+  text-align: left;
+}
