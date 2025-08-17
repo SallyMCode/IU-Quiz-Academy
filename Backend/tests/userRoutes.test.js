@@ -10,7 +10,7 @@ const { sequelize, User, Question, QuizRoom, QuizSession, AnswerInSession, Reaso
 
 // Führt vor allen Tests ein vollständiges Zurücksetzen und Neuanlegen der Datenbank durch
 beforeAll(async () => {
-  await sequelize.sync({ force: true }); // Achtung: löscht alle Daten!
+  await sequelize.sync({ force: true }); // Achtung: löscht alle Daten! Auf keinen Fall in der Produktion verwenden! -> löschte alle Daten der Datenkbank
 });
 
 // Schließt die Datenbankverbindung nach allen Tests

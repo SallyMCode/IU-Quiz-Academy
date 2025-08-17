@@ -2,10 +2,10 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { sequelize } = require('./config/database');
-const { User, AnswerInSession, AnswerOption, Question, QuizRoom, QuizSession, Reason,ForumPost,ForumThread } = require('./models');
 const registerRoutes = require('./routes');
 const requestLogger = require('./middlewares/requestLogger');
 const errorHandler = require('./middlewares/errorHandler');
+const authenticateToken = require('./middlewares/authenticateToken'); 
 
 const app = express();
 
@@ -16,14 +16,15 @@ app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true
 }));
-app.use(errorHandler);
 
-// Routen
-registerRoutes(app);
+registerRoutes(app); // Hier sollten Router inkl. AuthMiddleware korrekt gemountet sein
 
-// Health-Check (optional)
+// Health-Check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+// Error Handler nach allen Routen
+app.use(errorHandler);
 
 module.exports = app;

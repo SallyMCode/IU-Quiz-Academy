@@ -15,7 +15,7 @@ username: {
 passwordHash: { 
   type: DataTypes.STRING(255),
   allowNull: false,
-  field: 'password_hash' 
+  field: 'password_hash'
 },
 
 admin: {
