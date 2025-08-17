@@ -102,8 +102,8 @@
 
 /* Styling für Check_SVG auf SuccessPage */
 .secondary-content-box .image-secondaryContentbox {
-    width: 150px; /* Größe des Icons anpassen*/
-    height: 150px; /**/
+    width: 200px; /* Größe des Icons anpassen*/
+    height: 200px; /**/
     margin-bottom: 0px; /* Abstand nach unten zum Titel*/
     /* animation: fadeInScale 0.5s ease-out; */ /* Optionale Animation*/
 }

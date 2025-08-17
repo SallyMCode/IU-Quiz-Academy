@@ -1,6 +1,6 @@
 import React from 'react';
 import './SecondaryContentbox.css';
-import checkIcon from '../images/Check_icon.svg.png';
+import QuizFinished from '../images/QuizFinished.png';
 import ButtonGroup from './ButtonGroup';
 import thinkingIcon from '../images/thinking.png';
 import thumbsUPIcon from '../images/thumbsUP.png';
@@ -75,24 +75,6 @@ const SecondaryContentBox = ({
                             {children}
                         </div>
                     )}
-                </>
-            );
-        } else if (mode === 'result') {
-            return (
-                <>
-                    <span style={{ color: '#ffc107' }}>
-                        <h3 className="quiz-room-title">{quizRoom}</h3>
-                    </span>
-                    <p className="score-display">Dein Score<br />{currentScore}</p>
-                    <div>
-                        <div className="score-field">
-                            <strong>Bester Score:</strong> {bestScore}
-                        </div>
-                        <div className="score-field">
-                            <strong>Schlechtester Score:</strong> {worstScore}
-                        </div>
-                    </div>
-                    <img src={checkIcon} alt="CheckSymbol" className="image-secondaryContentbox" />
                 </>
             );
         } else if (mode === 'newQuiz') {

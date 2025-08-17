@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import NavBar from '../assets/components/NavBar';
 import Header from '../assets/components/Header';
+import TAGS from '../assets/components/TAGS';
 
 function CommunityPage() {
   // State für die Liste der Threads, Ladezustand, Fehler und neuen Thread-Titel
@@ -80,7 +81,7 @@ function CommunityPage() {
       <div className="container">
         {/* Suchleiste (noch deaktiviert, als Platzhalter) */}
         <div className="search-bar">
-          <input type="text" placeholder="🔍 Forum durchsuchen..." disabled />
+          <input type="text" placeholder="🔍 Forum durchsuchen... (noch nicht implementiert)" disabled />
           {/* Suchfunktion kann später implementiert werden */}
         </div>
 
@@ -114,11 +115,10 @@ function CommunityPage() {
           {threads.map(thread => (
             <div key={thread.id} className="forum-thread">
               <h3>
-                {/* Link führt zu Detailseite des Threads */}
                 <Link to={`/community/thread/${thread.id}`}>{thread.title}</Link>
               </h3>
               <div className="meta">
-                Erstellt von <strong>{thread.author?.username || 'Unbekannt'}</strong> am{' '}
+                Erstellt von <TAGS status="Neutral" text={`#${thread.author?.username || 'Unbekannt'}`} /> am{' '}
                 {new Date(thread.created_at).toLocaleDateString('de-DE')}
               </div>
             </div>

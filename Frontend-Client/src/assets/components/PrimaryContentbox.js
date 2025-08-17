@@ -3,6 +3,7 @@ import './PrimaryContentbox.css';
 import OptionFieldGroup from './OptionfieldGroup';
 import ButtonGroup from './ButtonGroup';
 import quizLogo from '../images/QuizAcademylogoBLANK.png';
+import QuizFinished from '../images/QuizFinished.png';
 
 const PrimaryContentbox = ({
   mode,
@@ -14,7 +15,13 @@ const PrimaryContentbox = ({
   mainMessage,
   subMessage,
   children,
-  customBorder
+  customBorder,
+  // Props für Result-Content
+  currentScoreTag,
+  bestScoreTag,
+  worstScoreTag,
+  showResultContent,
+  quizFinishedImage
 }) => {
 
   // Bedingtes Rendering basierend auf dem 'mode'
@@ -48,7 +55,22 @@ const PrimaryContentbox = ({
         <>
           <h2 className="main-message">{mainMessage}</h2>
           <p className="sub-message">{subMessage}</p>
-          <img src={quizLogo} alt="IU Quiz Academy Logo" className="quiz-logo-large" />
+          {showResultContent ? (
+            <>
+              <div style={{ marginBottom: 24, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 12 }}>
+                {currentScoreTag}
+                {bestScoreTag}
+                {worstScoreTag}
+              </div>
+              <img
+                src={quizFinishedImage || QuizFinished}
+                alt="Feedback"
+                style={{ maxWidth: 320, width: '100%', height: 'auto', marginBottom: 32 }}
+              />
+            </>
+          ) : (
+            <img src={quizLogo} alt="IU Quiz Academy Logo" className="quiz-logo-large" />
+          )}
           <ButtonGroup buttons={buttons} />
         </>
       );
@@ -62,6 +84,7 @@ const PrimaryContentbox = ({
   return (
     <div
       className={`content-box primary-content-box ${customBorder === 'blue' ? 'border-blue' : customBorder === 'yellow' ? 'border-yellow' : ''}`}
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
     >
       {renderContent()}
     </div>

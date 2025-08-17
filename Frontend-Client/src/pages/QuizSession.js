@@ -56,7 +56,7 @@ function QuizSession() {
           );
           setSessionId(data.id);
           setScore(data.score); // Score aus Session übernehmen
-        } catch (err) {}
+        } catch (err) { }
       } else if (sessionId) {
         // Session laden, falls vorhanden
         try {
@@ -66,7 +66,7 @@ function QuizSession() {
           setScore(data.score);
           setQuizRoomId(data.quizRoomId);
           setMode(data.public ? 'publicquiz' : 'quiz'); // Modus aus DB setzen
-        } catch (err) {}
+        } catch (err) { }
       }
     }
     fetchOrCreateSession();
@@ -112,7 +112,7 @@ function QuizSession() {
       try {
         const data = await sendRequest(`http://localhost:5000/api/quizrooms/${quizRoomId}`);
         setQuizRoomTitle(data.title);
-      } catch (err) {}
+      } catch (err) { }
     }
     fetchRoom();
   }, [quizRoomId, sendRequest]);
@@ -152,7 +152,7 @@ function QuizSession() {
         const sessionData = await sendRequest(`http://localhost:5000/api/quizsessions/${sessionId}`);
         setQuizRoomId(sessionData.quizRoomId);
         setMode(sessionData.public ? 'publicquiz' : 'quiz'); // Modus aus DB setzen
-      } catch (err) {}
+      } catch (err) { }
     }
     fetchSession();
   }, [sessionId, sendRequest]);
@@ -190,11 +190,11 @@ function QuizSession() {
 
   // Handler für Weiter-Button
   const handleNextQuestion = async () => {
-    // Nur im Status 'SELECTED' oder 'Finished' darf weitergeklickt werden
-    if (questionStatus !== 'SELECTED' && questionStatus !== 'Finished') return;
+    // Nur im Status 'SELECTED' oder 'FINISHED' darf weitergeklickt werden
+    if (questionStatus !== 'SELECTED' && questionStatus !== 'FINISHED') return;
 
-    // Wenn Status 'Finished', direkt zur nächsten Frage
-    if (questionStatus === 'Finished') {
+    // Wenn Status 'FINISHED', direkt zur nächsten Frage
+    if (questionStatus === 'FINISHED') {
       if (currentIdx < questions.length - 1) {
         setCurrentIdx(prev => prev + 1);
         setQuestionStatus('OPEN');
@@ -220,7 +220,7 @@ function QuizSession() {
           { 'Content-Type': 'application/json' }
         );
         setScore(data.score); // Score aktualisieren
-      } catch (err) {}
+      } catch (err) { }
     }
     // last_action updaten
     if (sessionId) {
@@ -231,7 +231,7 @@ function QuizSession() {
           JSON.stringify({ lastAction: new Date() }),
           { 'Content-Type': 'application/json' }
         );
-      } catch (err) {}
+      } catch (err) { }
     }
     // current_question updaten
     if (sessionId) {
@@ -242,13 +242,13 @@ function QuizSession() {
           JSON.stringify({ currentQuestion: currentIdx }),
           { 'Content-Type': 'application/json' }
         );
-      } catch (err) {}
+      } catch (err) { }
     }
 
-    // Nach 2 Sekunden Status auf 'Finished' setzen, damit der Nutzer weiterklicken kann
+    // Nach 2 Sekunden Status auf 'FINISHED' setzen, damit der Nutzer weiterklicken kann
     setTimeout(() => {
-      setQuestionStatus('Finished');
-    }, 2000);
+      setQuestionStatus('FINISHED');
+    }, 1000);
   };
 
   const handleCancelQuiz = () => {
@@ -263,8 +263,8 @@ function QuizSession() {
           'PATCH'
         );
         // Optional: Weiterleitung oder Abschlussanzeige
-        navigate('/SuccessPage', { state: { sessionId } });
-      } catch (err) {}
+        navigate('/SuccessPage', { state: { sessionId, isPublicQuizRoom, quizRoomTitle, imageType: secondaryImage } });
+      } catch (err) { }
     }
   };
 
@@ -317,8 +317,8 @@ function QuizSession() {
       </div>
     ) : feedbackType === 'correct' ? (
       <div style={{ marginTop: 24, textAlign: 'left' }}>
-        <TAGS status="Positive" 
-        text={<><strong>Begründung:</strong> {answerExplanation}</>} />
+        <TAGS status="Positive"
+          text={<><strong>Begründung:</strong> {answerExplanation}</>} />
       </div>
     ) : (
       <div style={{ marginTop: 24 }}>
@@ -343,7 +343,8 @@ function QuizSession() {
       type: 'primary',
       variant: 'contained',
       size: 'large',
-      style: { minWidth: 120 }
+      style: { minWidth: 120 },
+      disabled: questionStatus === 'ANSWERED' // Nur im Status 'ANSWERED' deaktivieren
     }
   ];
 

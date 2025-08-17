@@ -9,14 +9,12 @@ const statusClassMap = {
   Negative: 'tag-negative',
 };
 
-function TAGS({ status = 'Neutral', text = '' }) {
+export default function TAGS({ status = 'Neutral', text = '', style }) {
   const statusClass = statusClassMap[status] || statusClassMap.Neutral;
 
   return (
-    <span className={`tag-status ${statusClass}`}>
-      <span className="tag-status-text">{text}</span>
+    <span className={`tag-status ${statusClass}`} style={style}>
+      {text}
     </span>
   );
 }
-
-export default TAGS;

@@ -57,13 +57,6 @@ function MainPage() {
       .catch(() => setUserSessions([]));
   }, [userId]);
 
-  // Hilfsfunktion für Datumsformat (optional)
-  function formatDate(dateStr) {
-    if (!dateStr) return '';
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateStr).toLocaleDateString('de-DE', options);
-  }
-
   const handleResumeSession = (session) => {
     navigate('/Quizsession', {
       state: {
@@ -100,15 +93,15 @@ function MainPage() {
 
 
           {/* Tabelle der letzten Quiz Sessions */}
-          <div style={{ marginTop: 24 }}>
-            <h3 style={{ marginBottom: 4, textAlign: 'center' }}>Meine letzten Quiz Sessions</h3>
+          <div>
+            <h3 style={{ marginBottom: 4, textAlign: 'center' }}>🏆Meine letzten Quiz Sessions</h3>
             <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 8 }}>
               <thead>
                 <tr>
-                  <th style={{ textAlign: 'center', padding: 6 }}>QuizRoom</th>
-                  <th style={{ textAlign: 'center', padding: 6 }}>Score</th>
-                  <th style={{ textAlign: 'center', padding: 6 }}>Status</th>
-                  <th style={{ textAlign: 'center', padding: 6 }}>Aktion</th>
+                  <th style={{ textAlign: 'center', padding: 6, textDecoration: 'underline' }}>QuizRoom</th>
+                  <th style={{ textAlign: 'center', padding: 6, textDecoration: 'underline' }}>Score</th>
+                  <th style={{ textAlign: 'center', padding: 6, textDecoration: 'underline' }}>Status</th>
+                  <th style={{ textAlign: 'center', padding: 6, textDecoration: 'underline' }}>Aktion</th>
                 </tr>
               </thead>
               <tbody>

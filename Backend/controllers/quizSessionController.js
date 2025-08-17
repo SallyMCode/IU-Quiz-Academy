@@ -1,4 +1,5 @@
 const { QuizSession, User, QuizRoom, Question } = require('../models');
+const { Op } = require('sequelize');
 
 // Controller: Alle Quiz-Sessions abrufen
 // Inklusive zugehöriger User- und QuizRoom-Daten (nur ID und Name/Titel)
@@ -141,6 +142,12 @@ exports.getUserRoomSessions = async (req, res) => {
     const where = {};
     if (quizRoomId) where.quizRoomId = quizRoomId;
     if (userId) where.userId = userId;
+
+    // Filter für die letzten 24 Stunden
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    where.beginTime = { [Op.between]: [yesterday, now] };
+
     const sessions = await QuizSession.findAll({
       where,
       include: [

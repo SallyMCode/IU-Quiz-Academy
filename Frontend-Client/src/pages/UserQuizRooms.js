@@ -143,10 +143,10 @@ function UserQuizRooms() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 8 }}>
                   <thead>
                     <tr>
-                      <th style={{ textAlign: 'center', padding: 6 }}>Username</th>
-                      <th style={{ textAlign: 'center', padding: 6 }}>QuizRoom</th>
-                      <th style={{ textAlign: 'center', padding: 6 }}>Status</th>
-                      <th style={{ textAlign: 'center', padding: 6 }}>Score</th>
+                      <th style={{ textAlign: 'center', padding: 6, textDecoration: 'underline' }}>Username</th>
+                      <th style={{ textAlign: 'center', padding: 6, textDecoration: 'underline' }}>QuizRoom</th>
+                      <th style={{ textAlign: 'center', padding: 6, textDecoration: 'underline' }}>Status</th>
+                      <th style={{ textAlign: 'center', padding: 6, textDecoration: 'underline' }}>Score</th>
                     </tr>
                   </thead>
                   <tbody>
