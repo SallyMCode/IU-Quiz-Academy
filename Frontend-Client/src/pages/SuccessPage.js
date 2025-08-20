@@ -65,7 +65,7 @@ const SuccessPage = () => {
   // Tag-Komponenten für die Anzeige (nur SuccessPage größer/bold)
   const tagStyle = { fontSize: '1.25rem', fontWeight: 'bold' };
   const scoreTag = <TAGS status="High" text={`💯Dein Score: ${currentScoreDisplay}`} style={tagStyle} />;
-  const bestScoreTag = <TAGS status="Positive" text={`🥇Bester Score: ${bestScore}`} style={tagStyle} />;
+  const bestScoreTag = <TAGS status="Positive" text={`Bester Score: ${bestScore}`} style={tagStyle} />;
   const worstScoreTag = <TAGS status="Negative" text={`🥉Schlechtester Score: ${worstScore}`} style={tagStyle} />;
 
   return (
