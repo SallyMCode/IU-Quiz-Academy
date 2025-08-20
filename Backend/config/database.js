@@ -7,22 +7,21 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 // Import der Sequelize-Bibliothek für ORM (Object-Relational Mapping)
 const { Sequelize } = require('sequelize');
 
-// Neue Sequelize-Instanz zur Verbindung mit der Datenbank (MariaDB)
-const sequelize = new Sequelize(
-  process.env.DB_NAME,       // Datenbankname aus .env
-  process.env.DB_USER,       // Benutzername aus .env
-  process.env.DB_PASSWORD,   // Passwort aus .env
-  {
-    host: process.env.DB_HOST,       // Hostname des Datenbankservers
-    dialect: 'mariadb',              // Datenbanktyp (MariaDB)
-    port: process.env.DB_PORT || 3306, // Fallback auf Standard-Port 3306
-    logging: false,                  // Deaktiviert SQL-Ausgaben in der Konsole
-    define: {
-      timestamps: true,   // Automatisch createdAt/updatedAt-Felder in Tabellen
-      underscored: true   // Spaltennamen mit Unterstrichen (z.B. created_at statt createdAt)
-    }
+// Neue Sequelize-Instanz zur Verbindung mit der Datenbank (PostgreSQL über DATABASE_URL)
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  protocol: 'postgres',
+  logging: false,
+  define: {
+    timestamps: true,   // Automatisch createdAt/updatedAt-Felder in Tabellen
+    underscored: true   // Spaltennamen mit Unterstrichen (z.B. created_at statt createdAt)
+  },
+  dialectOptions: {
+    ssl: process.env.NODE_ENV === 'production'
+      ? { require: true, rejectUnauthorized: false }
+      : false
   }
-);
+});
 
 // Funktion zur Überprüfung der Datenbankverbindung
 async function testConnection() {
